@@ -3,7 +3,7 @@
   import Map2D from './Map2D.svelte';
   import CesiumView from './CesiumView.svelte';
   import { json } from './data.js';
-  let { points = [], mode = '2d', theme = 'light', selected = '', onSelect = () => {} } = $props();
+  let { points = [], mode = '2d', theme = 'light', selected = '', selectedCandidate = '', onSelect = () => {} } = $props();
   let index = $state(null), studies = $state([]), studyError = $state('');
   let reconstruction = $state(false), periodId = $state(''), showEvidence = $state(true);
   let useThreshold = $state(false), threshold = $state(-209);
@@ -32,7 +32,7 @@
     </div>
     {#if reconstruction && periods.length}<label>Evidence period <select aria-label="Historical evidence period" value={effectivePeriod?.id} onchange={e=>{periodId=e.currentTarget.value;useThreshold=false;}}>{#each periods as p}<option value={p.id}>{p.label}</option>{/each}</select></label>{/if}
   </div>
-  <CesiumView {points} {theme} {selected} {onSelect} {reconstruction} evidenceSites={sites} {showEvidence} threshold={useThreshold && reconstruction ? Number(threshold) : null} />
+  <CesiumView {points} {theme} {selected} {selectedCandidate} {onSelect} {reconstruction} evidenceSites={sites} {showEvidence} threshold={useThreshold && reconstruction ? Number(threshold) : null} />
   {#if reconstruction}
     <section class="reconstruction-evidence">
       <div class="section-label">Reconstruction coverage <span>{covered} of {placeIds.length} place records have dated evidence studies</span></div>
@@ -56,5 +56,5 @@
     </section>
   {/if}
 {:else}
-  <Map2D {points} {theme} {selected} {onSelect} />
+  <Map2D {points} {theme} {selected} {selectedCandidate} {onSelect} />
 {/if}

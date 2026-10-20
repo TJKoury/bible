@@ -3,7 +3,7 @@
   import 'maplibre-gl/dist/maplibre-gl.css';
   import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
   import Icon from './Icon.svelte';
-  let { points = [], theme = 'light', selected = '', onSelect = () => {} } = $props();
+  let { points = [], theme = 'light', selected = '', selectedCandidate = '', onSelect = () => {} } = $props();
   let container;
   let map;
   let library;
@@ -13,6 +13,7 @@
   let tileFailure = $state(false);
   let retry = $state(0);
   let boundsKey = null;
+  let focusKey = '';
   onMount(() => {
     let disposed = false;
     let resize;
@@ -50,20 +51,30 @@
     return () => { disposed = true; resize?.disconnect(); markers.forEach(m => m.remove()); map?.remove(); };
   });
   $effect(() => {
-    const loaded = ready; const current = points; const chosen = selected;
+    const loaded = ready; const current = points; const chosen = selected; const chosenCandidate = selectedCandidate;
     if (!loaded || !map) return;
     markers.forEach(marker => marker.remove()); markers = [];
     for (const point of current) {
       const element = document.createElement('button');
-      element.className = `atlas-pin ${point.disputed ? 'candidate' : ''} ${chosen === point.placeId ? 'chosen' : ''}`;
+      const highlighted = chosenCandidate ? chosenCandidate === point.key : chosen === point.placeId;
+      element.className = `atlas-pin ${point.disputed ? 'candidate' : ''} ${highlighted ? 'chosen' : ''}`;
       element.setAttribute('aria-label', point.label);
+      element.setAttribute('aria-pressed', String(highlighted));
       element.title = point.label;
       element.textContent = point.disputed ? '◇' : '●';
-      element.onclick = () => onSelect(point.placeId);
+      element.onclick = () => onSelect(point.placeId, point.key);
       markers.push(new library.Marker({ element }).setLngLat([point.lon, point.lat]).addTo(map));
     }
     const key = current.map(p => `${p.key}:${p.lon}:${p.lat}`).join('|');
-    if (key !== boundsKey) { boundsKey = key; fit(current); }
+    const focused = current.find(point => point.key === chosenCandidate);
+    const nextFocusKey = focused ? `${focused.key}:${focused.lon}:${focused.lat}` : '';
+    if (focused && (nextFocusKey !== focusKey || key !== boundsKey)) {
+      map.flyTo({ center: [focused.lon, focused.lat], zoom: Math.max(map.getZoom(), 12), duration: 700 });
+    } else if (key !== boundsKey) {
+      fit(current);
+    }
+    boundsKey = key;
+    focusKey = nextFocusKey;
   });
   $effect(() => {
     if (!ready || !map) return;

@@ -609,6 +609,9 @@ h1 {
 .study-title-row .icon-button.is-saved {
   color: var(--gold);
 }
+.study-title-row .icon-button.is-saved svg {
+  fill: currentColor;
+}
 .study-pane blockquote {
   font-family: "Libre Baskerville", Georgia, serif;
   font-size: 12px;

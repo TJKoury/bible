@@ -4,11 +4,12 @@
   import { assetUrl } from './data.js';
   import { terrainProvider } from './terrain.js';
   import Icon from './Icon.svelte';
-  let { points = [], theme = 'light', selected = '', onSelect = () => {}, reconstruction = false, evidenceSites = [], showEvidence = true, threshold = null } = $props();
+  let { points = [], theme = 'light', selected = '', selectedCandidate = '', onSelect = () => {}, reconstruction = false, evidenceSites = [], showEvidence = true, threshold = null } = $props();
   let container;
   let viewer, C, terrain, handler, resize;
   let ready = $state(false), failure = $state(''), terrainState = $state('loading');
   let lastBounds = null;
+  let lastFocus = '';
   onMount(() => {
     let disposed = false;
     async function start() {
@@ -35,7 +36,7 @@
         handler.setInputAction(event => {
           const entity = viewer.scene.pick(event.position)?.id;
           const placeId = entity?.properties?.placeId?.getValue();
-          if (placeId) onSelect(placeId);
+          if (placeId) onSelect(placeId, entity.id);
         },C.ScreenSpaceEventType.LEFT_CLICK);
         resize = new ResizeObserver(() => { viewer?.resize(); viewer?.scene.requestRender(); });
         resize.observe(container);
@@ -47,14 +48,17 @@
   });
   $effect(() => {
     if (!ready || !viewer) return;
-    const current = points, chosen = selected, sites = evidenceSites, display = showEvidence;
+    const current = points, chosen = selected, chosenCandidate = selectedCandidate, sites = evidenceSites, display = showEvidence;
     viewer.entities.removeAll();
-    for (const p of current) viewer.entities.add({
+    for (const p of current) {
+      const highlighted = chosenCandidate ? chosenCandidate === p.key : chosen === p.placeId;
+      viewer.entities.add({
       id:p.key,position:C.Cartesian3.fromDegrees(p.lon,p.lat),
       properties:{placeId:p.placeId},
-      point:{pixelSize:chosen===p.placeId?13:9,color:C.Color.fromCssColorString(p.disputed?'#bb954f':'#466555'),outlineColor:C.Color.WHITE,outlineWidth:2,heightReference:C.HeightReference.CLAMP_TO_GROUND,disableDepthTestDistance:Number.POSITIVE_INFINITY},
+      point:{pixelSize:highlighted?16:9,color:C.Color.fromCssColorString(highlighted?'#e7b865':p.disputed?'#bb954f':'#466555'),outlineColor:C.Color.WHITE,outlineWidth:highlighted?3:2,heightReference:C.HeightReference.CLAMP_TO_GROUND,disableDepthTestDistance:Number.POSITIVE_INFINITY},
       label:{text:p.name || p.placeName,font:'13px sans-serif',fillColor:C.Color.WHITE,outlineColor:C.Color.fromCssColorString('#26382e'),outlineWidth:3,style:C.LabelStyle.FILL_AND_OUTLINE,pixelOffset:new C.Cartesian2(0,-22),heightReference:C.HeightReference.CLAMP_TO_GROUND,disableDepthTestDistance:Number.POSITIVE_INFINITY,distanceDisplayCondition:new C.DistanceDisplayCondition(0,150000)},
-    });
+      });
+    }
     if (reconstruction && display) for (const s of sites) {
       const coords = s.geometry?.coordinates;
       if (!coords || s.geometry?.type !== 'Point') continue;
@@ -64,7 +68,12 @@
       });
     }
     const key = current.map(p=>`${p.key}:${p.lon}:${p.lat}`).join('|');
-    if (key!==lastBounds) { lastBounds=key; fit(); }
+    const focused = current.find(p=>p.key===chosenCandidate);
+    const nextFocus = focused ? `${focused.key}:${focused.lon}:${focused.lat}` : '';
+    if (focused && (nextFocus!==lastFocus || key!==lastBounds)) fit([focused]);
+    else if (key!==lastBounds) fit(current);
+    lastBounds=key;
+    lastFocus=nextFocus;
     viewer.scene.requestRender();
   });
   $effect(() => {
@@ -93,10 +102,10 @@
     }}) : undefined;
     viewer.scene.requestRender();
   });
-  function fit() {
+  function fit(current = points) {
     if (!viewer) return;
-    if (!points.length) { viewer.camera.flyTo({destination:C.Cartesian3.fromDegrees(35,31,1500000),duration:0.7}); return; }
-    const sphere = C.BoundingSphere.fromPoints(points.map(p=>C.Cartesian3.fromDegrees(p.lon,p.lat)));
+    if (!current.length) { viewer.camera.flyTo({destination:C.Cartesian3.fromDegrees(35,31,1500000),duration:0.7}); return; }
+    const sphere = C.BoundingSphere.fromPoints(current.map(p=>C.Cartesian3.fromDegrees(p.lon,p.lat)));
     viewer.camera.flyToBoundingSphere(sphere,{duration:0.8,offset:new C.HeadingPitchRange(C.Math.toRadians(-12),C.Math.toRadians(-48),Math.max(3500,sphere.radius*3.5))});
   }
   function zoom(factor) { if(viewer){viewer.camera.zoomIn(viewer.camera.positionCartographic.height*factor);viewer.scene.requestRender();} }
@@ -107,7 +116,7 @@
   <div bind:this={container} class="map-canvas" aria-label="Cesium 3D map"></div>
   {#if failure}<div class="map-notice" role="alert">{failure}</div>{:else if !ready}<div class="map-notice">Loading Cesium 3D…</div>{/if}
   {#if ready}
-    <button class="map-fit" onclick={fit}><Icon name="expand" />Fit places</button>
+    <button class="map-fit" onclick={()=>fit()}><Icon name="expand" />Fit places</button>
     <div class="cesium-controls"><button aria-label="Zoom in" onclick={()=>zoom(0.35)}>+</button><button aria-label="Zoom out" onclick={()=>zoom(-0.5)}>−</button><button aria-label="Face north" onclick={north}>N</button></div>
     <div class="map-legend"><span>CesiumJS · 3D</span><span>{reconstruction?'Modern relief · historical overlays':'Modern terrain'}</span></div>
   {/if}

@@ -317,7 +317,7 @@
     <aside class="sidebar" class:open={sidebarOpen} aria-label="Bible navigation">
       <nav class="main-nav" aria-label="Main navigation">
         {#each [['reader', 'Read & explore', 'book'], ['encyclopedia', 'Study encyclopedia', 'compass'], ['atlas', 'Geography & maps', 'map'], ['research', 'Research desk', 'spark'], ['library', 'Translation library', 'library'], ['saved', 'Saved passages', 'bookmark']] as [value, title, icon]}
-          <button class="nav-item" class:active={view === value} aria-current={view === value ? 'page' : undefined} onclick={() => setView(value)}><Icon name={icon} />{title}{#if value === 'library' || value === 'saved'}<span class="nav-count">{value === 'library' ? catalog.translations.length : saved.length || ''}</span>{/if}</button>
+          <button class="nav-item" class:active={view === value} aria-current={view === value ? 'page' : undefined} onclick={() => setView(value)}><Icon name={icon} />{title}{#if value === 'library' || value === 'saved'}<span class="nav-count">{value === 'library' ? catalog.translations.length : saved.length}</span>{/if}</button>
         {/each}
       </nav>
       <div class="sidebar-label">THE BOOKS<span>{availableBooks.length}</span></div>

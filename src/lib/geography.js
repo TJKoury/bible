@@ -6,16 +6,23 @@ export function passagePlaces(data, book, chapter, verse, scope = 'chapter') {
   return [...new Set(ids || [])].map(id => data.places[id]).filter(Boolean);
 }
 
+export function candidateKey(placeId, candidate, index) {
+  // Source candidate IDs can repeat within a place. Use the original array
+  // position so list selection and mapped candidates share one unique identity.
+  return `${placeId}-${candidate.id || 'candidate'}-${index}`;
+}
+
 export function mapPoints(places) {
-  return places.flatMap(place => (place.candidates || []).filter(c =>
-    Number.isFinite(c.lon) && Number.isFinite(c.lat) &&
-    Math.abs(c.lon) <= 180 && Math.abs(c.lat) <= 90
-  ).map((candidate, index) => ({
-    ...candidate, key: `${place.id}-${candidate.id || index}`,
-    placeId: place.id, placeName: place.name,
-    disputed: place.candidates.length > 1,
-    label: `${place.name} · ${candidate.name || 'candidate site'}`,
-  })));
+  return places.flatMap(place => (place.candidates || []).flatMap((candidate, index) => {
+    if (!Number.isFinite(candidate.lon) || !Number.isFinite(candidate.lat) ||
+      Math.abs(candidate.lon) > 180 || Math.abs(candidate.lat) > 90) return [];
+    return [{
+      ...candidate, key: candidateKey(place.id, candidate, index),
+      placeId: place.id, placeName: place.name,
+      disputed: place.candidates.length > 1,
+      label: `${place.name} · ${candidate.name || 'candidate site'}`,
+    }];
+  }));
 }
 
 export function articleList(index) {

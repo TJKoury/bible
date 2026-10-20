@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createIndex, searchIndex, citationAudit, selectEvidence, evidenceExcerpt, tokens, dossierDocuments, normalizeCitations } from '../src/lib/retrieval.js';
-import { passagePlaces, mapPoints, linkedArticles } from '../src/lib/geography.js';
+import { passagePlaces, candidateKey, mapPoints, linkedArticles } from '../src/lib/geography.js';
 import { buildMessages } from '../src/lib/ai.js';
 const read = path => JSON.parse(fs.readFileSync(new URL(`../public/data/${path}`, import.meta.url)));
 
@@ -17,6 +17,32 @@ test('Bethsaida in John 1:44 preserves competing identifications', () => {
   assert.ok(points.every(p => p.disputed));
   assert.deepEqual(passagePlaces(geo,99,999,999,'verse'),[]);
   assert.equal(mapPoints([{id:'x',name:'Unknown',candidates:[{lat:null,lon:null}]}]).length,0);
+});
+
+test('candidate selection keys survive filtering and distinguish repeated source IDs', () => {
+  const candidates = [
+    { name: 'Unlocated', lat: null, lon: null },
+    { id: 'shared', name: 'First location', lat: 32.9, lon: 35.6 },
+    { name: 'Invalid location', lat: 91, lon: 35.6 },
+    { name: 'Unnamed source ID', lat: 32.8, lon: 35.7 },
+    { id: 'shared', name: 'Alternative location', lat: 32.7, lon: 35.8 },
+  ];
+  const points = mapPoints([{ id: 'place', name: 'A place', candidates }]);
+  const listSelectionKeys = candidates.map((candidate, index) => candidateKey('place', candidate, index));
+  assert.deepEqual(points.map(point => point.key), [
+    listSelectionKeys[1], listSelectionKeys[3], listSelectionKeys[4],
+  ]);
+  assert.equal(new Set(points.map(point => point.key)).size, 3);
+  assert.equal(points.find(point => point.key === listSelectionKeys[3]).name, 'Unnamed source ID');
+  assert.equal(points.find(point => point.key === listSelectionKeys[0]), undefined);
+  assert.notEqual(candidateKey('another-place', candidates[1], 1), listSelectionKeys[1]);
+});
+
+test('every mapped corpus candidate has a unique key for Cesium entities', () => {
+  const geo = read('geography/index.json');
+  const points = mapPoints(Object.values(geo.places));
+  assert.equal(points.length, geo.meta.candidateCount);
+  assert.equal(new Set(points.map(point => point.key)).size, points.length);
 });
 
 test('entity matching uses word boundaries and respects ambiguity exclusions', () => {

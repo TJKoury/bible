@@ -44,13 +44,23 @@
 .place-row.active { background: var(--green-light); border-radius: 5px; }
 .place-row > svg { margin-top: 3px; color: var(--gold); }
 .place-row > svg:last-child { margin-left: auto; width: 13px; color: var(--muted); }
+.place-row[aria-expanded="true"] > svg:last-child { transform: rotate(90deg); }
 .place-row strong { font-family: "Libre Baskerville",Georgia,serif; font-size: 14px; font-weight: 400; }
 .place-row small { display: block; color: var(--muted); font-size: 10px; line-height: 1.7; margin-top: 4px; }
+.place-candidates { margin: 5px 0 12px 18px; padding-left: 10px; border-left: 1px solid var(--line); }
+.candidate-row { display: flex; align-items: flex-start; gap: 9px; width: 100%; padding: 11px 9px; border: 1px solid transparent; border-radius: 5px; text-align: left; }
+.candidate-row > svg { flex-shrink: 0; margin-top: 2px; color: var(--muted); }
+.candidate-row strong { font-size: 12px; font-weight: 500; }
+.candidate-row small { display: block; font-size: 10px; line-height: 1.7; margin-top: 3px; color: var(--muted); }
+.candidate-row:hover { background: var(--green-light); }
+.candidate-row.active { background: var(--green-light); border-color: var(--gold); }
+.candidate-row.active > svg { color: var(--gold); }
 .atlas-detail { border: 1px solid var(--line); padding: 26px; border-radius: 8px; }
 .atlas-detail h2, .encyclopedia-welcome h2 { font: 400 26px/1.5 "Libre Baskerville",Georgia,serif; }
 .atlas-detail > p { font-size: 13px; line-height: 1.9; color: var(--muted); }
 .candidate-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 15px; margin: 24px 0; }
 .candidate-card { background: var(--panel); padding: 18px; border-radius: 6px; border: 1px solid var(--line); }
+.candidate-card.active { border-color: var(--gold); box-shadow: 0 0 0 1px var(--gold); }
 .candidate-card h3 { margin: 15px 0 8px; font-size: 15px; }
 .candidate-card p { color: var(--muted); font-size: 11px; line-height: 1.8; }
 .candidate-card code { font-size: 10px; }
@@ -174,7 +184,7 @@ summary { cursor: pointer; }
 body[data-theme="dark"] { color-scheme: dark; background: var(--paper); color: var(--ink); }
 @media (min-width:1800px) { .explore-view { padding-top: 60px; } .research-layout { grid-template-columns: minmax(0,1fr) 330px; gap: 65px; } }
 @media (max-width:1200px) { .explore-view { padding: 32px 26px; } .research-layout { grid-template-columns: minmax(0,1fr) 250px; gap: 24px; } .encyclopedia-layout { grid-template-columns: 210px minmax(0,1fr); gap: 28px; } .atlas-layout { grid-template-columns: minmax(0,1fr) 230px; gap: 20px; } .outline-badge { white-space: normal; } .research-result-heading { flex-direction: column; gap: 14px; } }
-@media (max-width:1000px) { .research-layout { grid-template-columns: 1fr; } .research-sidebar { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; } .model-card { grid-row: span 2; } .corpus-card { margin: 0; } .atlas-layout { grid-template-columns: 1fr; } .atlas-places { display: block; } .place-row { display: inline-flex; width: 50%; } .encyclopedia-layout { grid-template-columns: 180px minmax(0,1fr); gap: 22px; } .encyclopedia-welcome { padding: 35px 20px; } .explore-heading > .outline-badge { display: none; } }
+@media (max-width:1000px) { .research-layout { grid-template-columns: 1fr; } .research-sidebar { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; } .model-card { grid-row: span 2; } .corpus-card { margin: 0; } .atlas-layout { grid-template-columns: 1fr; } .atlas-places { display: block; } .encyclopedia-layout { grid-template-columns: 180px minmax(0,1fr); gap: 22px; } .encyclopedia-welcome { padding: 35px 20px; } .explore-heading > .outline-badge { display: none; } }
 @media (max-width:650px) {
   .topbar { gap: 12px; } .topbar .theme-toggle { width: 30px; height: 30px; } .topbar .brand { margin-right: auto; } .topbar .search-trigger { margin-left: 0; }
   .explore-view { padding: 27px 18px; } .explore-heading { margin-bottom: 25px; } .explore-heading h1 { font-size: 27px; letter-spacing: -.8px; line-height: 1.5; } .explore-heading .eyebrow { font-size: 8px; } .explore-heading p:last-child { font-size: 12px; }
