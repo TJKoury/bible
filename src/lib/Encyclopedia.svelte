@@ -71,7 +71,7 @@
         {#if article.summary}<p class="article-lead">{article.summary}</p>{/if}
         <div class="article-tabs" role="group" aria-label="Study article sections">{#each sections as [id, title]}<button class:active={section === id} aria-pressed={section === id} onclick={() => section = id}>{title}</button>{/each}</div>
         {#if section === 'maps'}
-          {#if points.length}<div class="inline-actions"><div class="segmented"><button class:active={mapMode === '2d'} onclick={() => mapMode = '2d'}>2D map</button><button class:active={mapMode === '3d'} onclick={() => mapMode = '3d'}>Cesium 3D</button></div><button class="subtle-button" onclick={onMap}>Open passage atlas <Icon name="arrow-right" /></button></div><MapView {points} mode={mapMode} {theme} />
+          {#if points.length}<MapView {points} bind:mode={mapMode} {theme} /><button class="subtle-button" onclick={onMap}>Open passage atlas <Icon name="arrow-right" /></button>
             <p class="source-caption">Candidate identifications from OpenBible.info, CC BY 4.0. Modern landscape; alternative locations are not a reconstructed journey.</p>
             {#each relatedPlaces as place}<div class="article-section"><h3>{place.name}</h3>{#each place.candidates || [] as c}<p><strong>{c.name}</strong>{#if Number.isFinite(c.lat)} · {c.lat.toFixed(4)}°, {c.lon.toFixed(4)}°{/if}{#if c.description}<br>{c.description}{/if}</p>{/each}<a href={place.url} target="_blank" rel="noreferrer">Identification evidence ↗</a></div>{/each}
           {:else}<p class="empty-note">No geographical identification is linked to this article. People and ideas may not have a single meaningful map location.</p>{/if}

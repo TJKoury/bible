@@ -2,6 +2,8 @@
   import { onMount } from 'svelte';
   import Icon from './Icon.svelte';
   import MapView from './MapView.svelte';
+  import MapToolbar from './MapToolbar.svelte';
+  import { savedImagery } from './imagery.js';
   import { json, referenceLabel } from './data.js';
   import { passagePlaces, mapPoints, candidateKey } from './geography.js';
   let { catalog, book, chapter, verse, edition, theme, onPassage, onArticle } = $props();
@@ -9,6 +11,8 @@
   let error = $state('');
   let scope = $state('chapter');
   let mode = $state('2d');
+  let imagery = $state(savedImagery());
+  let reconstruction = $state(false);
   let selected = $state('');
   let selectedCandidate = $state('');
   let requested = $state('');
@@ -32,15 +36,12 @@
 
 <section class="explore-view atlas-view">
   <div class="explore-heading"><h1>Geography & maps</h1></div>
-  <div class="context-toolbar">
-    <div class="segmented" role="group" aria-label="Map passage scope">{#each ['chapter', 'verse'] as s}<button class:active={scope === s} aria-pressed={scope === s} onclick={() => scope = s}>{s === 'chapter' ? 'Whole chapter' : `Verse ${verse}`}</button>{/each}</div>
-    <div class="segmented map-mode" role="group" aria-label="Map dimensions"><button class:active={mode === '2d'} aria-pressed={mode === '2d'} onclick={() => mode = '2d'}>2D map</button><button class:active={mode === '3d'} aria-pressed={mode === '3d'} onclick={() => mode = '3d'}>Cesium 3D</button></div>
-  </div>
+  <MapToolbar bind:mode bind:imagery bind:reconstruction bind:scope {verse} />
   {#if error}<p class="error-note">{error} <button onclick={load}>Retry</button></p>{/if}
   <div class="atlas-layout">
     <div class="atlas-main">
-      <MapView {points} {mode} {theme} {selected} {selectedCandidate} onSelect={selectCandidate} />
-      <p class="source-caption">Modern terrain; dated historical evidence is available in the reconstruction lab where sourced. Online tiles: OpenStreetMap · <a href="https://mapterhorn.com/attribution/" target="_blank" rel="noreferrer">Mapterhorn elevation</a>. Locations: <a href="https://www.openbible.info/geo/" target="_blank" rel="noreferrer">OpenBible.info · CC BY 4.0</a>.</p>
+      <MapView {points} {mode} {imagery} {reconstruction} showToolbar={false} {theme} {selected} {selectedCandidate} onSelect={selectCandidate} />
+      <p class="source-caption">Modern imagery and terrain; dated historical evidence is available in the reconstruction lab where sourced. Imagery credits appear on the map. Elevation: <a href="https://mapterhorn.com/attribution/" target="_blank" rel="noreferrer">Mapterhorn</a>. Locations: <a href="https://www.openbible.info/geo/" target="_blank" rel="noreferrer">OpenBible.info · CC BY 4.0</a>.</p>
       {#if currentPlace}
         <div class="atlas-detail">
           <p class="eyebrow">PLACE RECORD</p><h2>{currentPlace.name}</h2>

@@ -2,16 +2,21 @@
   import { onMount } from 'svelte';
   import 'maplibre-gl/dist/maplibre-gl.css';
   import mapWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
+  import { getBasemap } from './imagery.js';
   import Icon from './Icon.svelte';
-  let { points = [], theme = 'light', selected = '', selectedCandidate = '', onSelect = () => {} } = $props();
+  let { points = [], theme = 'light', imagery = 'streets', selected = '', selectedCandidate = '', onSelect = () => {} } = $props();
   let container;
   let map;
   let library;
   let markers = [];
   let ready = $state(false);
   let failure = $state('');
-  let tileFailure = $state(false);
-  let retry = $state(0);
+  let tileFailure = $state('');
+  let imageryRetry = $state(0);
+  const basemap = $derived(getBasemap(imagery));
+  let activeLayerIds = [];
+  let activeImageryKey = '';
+  let activeImageryLabel = '';
   let boundsKey = null;
   let focusKey = '';
   onMount(() => {
@@ -28,19 +33,17 @@
           attributionControl: { compact: false },
           style: {
             version: 8,
-            sources: {
-              land: {
-                type: 'raster', tileSize: 256, maxzoom: 19,
-                tiles: [import.meta.env.VITE_MAP_TILES || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-                attribution: '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors',
-              },
-            },
-            layers: [{ id: 'land', type: 'raster', source: 'land', paint: { 'raster-saturation': -0.55 } }],
+            sources: {},
+            layers: [],
           },
         });
         map.addControl(new library.NavigationControl(), 'top-right');
         map.on('load', () => { if (!disposed) ready = true; });
-        map.on('error', () => { if (!disposed) tileFailure = true; });
+        map.on('error', event => {
+          if (!disposed && activeLayerIds.includes(event.sourceId)) {
+            tileFailure = `${activeImageryLabel} imagery could not load completely. Choose another map style above, or retry.`;
+          }
+        });
         resize = new ResizeObserver(() => map?.resize());
         resize.observe(container);
       } catch (e) {
@@ -78,9 +81,49 @@
   });
   $effect(() => {
     if (!ready || !map) return;
-    map.setPaintProperty('land', 'raster-brightness-max', theme === 'dark' ? 0.55 : 1);
+    const definition = basemap;
+    const key = `${definition.id}:${imageryRetry}`;
+    const dark = theme === 'dark';
+    if (key !== activeImageryKey) {
+      // Remove sources as well as layers so inactive imagery stops requesting
+      // tiles and its credit leaves the attribution control.
+      for (const id of activeLayerIds) {
+        if (map.getLayer(id)) map.removeLayer(id);
+        if (map.getSource(id)) map.removeSource(id);
+      }
+      activeLayerIds = [];
+      activeImageryKey = key;
+      activeImageryLabel = definition.label;
+      tileFailure = '';
+      try {
+        for (const layer of definition.layers) {
+          const id = `imagery-${layer.id}`;
+          activeLayerIds.push(id);
+          map.addSource(id, {
+            type: 'raster', tileSize: layer.tileSize, maxzoom: layer.maxZoom,
+            tiles: [layer.url], attribution: layer.attribution,
+          });
+          map.addLayer({
+            id, type: 'raster', source: id,
+            paint: {
+              'raster-saturation': layer.saturation ?? 0,
+              'raster-brightness-max': dark ? (layer.darkBrightness ?? 1) : 1,
+              'raster-fade-duration': 0,
+            },
+          });
+        }
+      } catch {
+        tileFailure = `${definition.label} imagery could not start. Choose another map style above, or retry.`;
+      }
+    } else {
+      for (const layer of definition.layers) {
+        const id = `imagery-${layer.id}`;
+        if (map.getLayer(id)) {
+          map.setPaintProperty(id, 'raster-brightness-max', dark ? (layer.darkBrightness ?? 1) : 1);
+        }
+      }
+    }
   });
-  $effect(() => { if (retry && map) { tileFailure = false; map.triggerRepaint(); } });
   function fit(current = points) {
     if (!map) return;
     if (!current.length) { map.easeTo({center:[35.5,32],zoom:5,pitch:0,bearing:0,duration:600});return; }
@@ -95,6 +138,6 @@
   {#if failure}<div class="map-notice">{failure}</div>
   {:else if !ready}<div class="map-notice">Opening the landscape…</div>{/if}
   {#if ready}<button class="map-fit" onclick={() => fit()}><Icon name="expand" />Fit places</button>{/if}
-  {#if tileFailure}<div class="tile-notice">Some map imagery could not load. Place coordinates remain available. <button onclick={() => retry++}>Dismiss</button></div>{/if}
+  {#if tileFailure}<div class="tile-notice" role="status">{tileFailure} <button onclick={() => imageryRetry++}>Retry imagery</button></div>{/if}
   <div class="map-legend"><span>● Located site</span><span>◇ Alternative candidate</span></div>
 </div>

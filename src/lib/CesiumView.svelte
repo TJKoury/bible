@@ -3,11 +3,16 @@
   import 'cesium/Build/Cesium/Widgets/widgets.css';
   import { assetUrl } from './data.js';
   import { terrainProvider } from './terrain.js';
+  import { getBasemap } from './imagery.js';
   import Icon from './Icon.svelte';
-  let { points = [], theme = 'light', selected = '', selectedCandidate = '', onSelect = () => {}, reconstruction = false, evidenceSites = [], showEvidence = true, threshold = null } = $props();
+  let { points = [], theme = 'light', imagery = 'streets', selected = '', selectedCandidate = '', onSelect = () => {}, reconstruction = false, evidenceSites = [], showEvidence = true, threshold = null } = $props();
   let container;
   let viewer, C, terrain, handler, resize;
   let ready = $state(false), failure = $state(''), terrainState = $state('loading');
+  let imageryFailure = $state(''), imageryRetry = $state(0);
+  const basemap = $derived(getBasemap(imagery));
+  let activeImagery = [], imageryListeners = [];
+  let activeImageryKey = '', imageryGeneration = 0;
   let lastBounds = null;
   let lastFocus = '';
   onMount(() => {
@@ -25,7 +30,6 @@
           animation:false,timeline:false,fullscreenButton:false,infoBox:false,selectionIndicator:false,
           requestRenderMode:true,maximumRenderTimeChange:Infinity,scene3DOnly:true,
         });
-        viewer.imageryLayers.addImageryProvider(new C.OpenStreetMapImageryProvider({url:'https://tile.openstreetmap.org/'}));
         viewer.scene.globe.depthTestAgainstTerrain = true;
         viewer.scene.globe.maximumScreenSpaceError = 3;
         viewer.scene.screenSpaceCameraController.minimumZoomDistance = 150;
@@ -44,7 +48,63 @@
       } catch (e) { if (!disposed) failure = `Cesium could not start: ${e.message || 'WebGL is unavailable'}. The 2D map remains available.`; }
     }
     start();
-    return () => { disposed=true;resize?.disconnect();handler?.destroy();terrain?.dispose();if(viewer&&!viewer.isDestroyed())viewer.destroy(); };
+    return () => {
+      disposed=true;
+      imageryGeneration++;
+      imageryListeners.forEach(remove=>remove());
+      resize?.disconnect();handler?.destroy();terrain?.dispose();
+      if(viewer&&!viewer.isDestroyed())viewer.destroy();
+    };
+  });
+  $effect(() => {
+    if (!ready || !viewer) return;
+    const definition = basemap;
+    const key = `${definition.id}:${imageryRetry}`;
+    const dark = theme === 'dark';
+    const visible = !reconstruction;
+    if (key !== activeImageryKey) {
+      const generation = ++imageryGeneration;
+      imageryListeners.forEach(remove=>remove());
+      imageryListeners = [];
+      viewer.imageryLayers.removeAll(true);
+      activeImagery = [];
+      activeImageryKey = key;
+      imageryFailure = '';
+      try {
+        for (const layer of definition.layers) {
+          const provider = new C.UrlTemplateImageryProvider({
+            url:layer.url,
+            tileWidth:layer.tileSize,tileHeight:layer.tileSize,
+            maximumLevel:layer.maxZoom,
+            credit:new C.Credit(layer.attribution,true),
+            hasAlphaChannel:layer.alpha ?? true,
+            enablePickFeatures:false,
+          });
+          imageryListeners.push(provider.errorEvent.addEventListener(() => {
+            if (generation === imageryGeneration) {
+              imageryFailure = `${definition.label} imagery could not load completely. Choose another map style above, or retry.`;
+            }
+          }));
+          // A hidden layer does not request tiles, including when this viewer
+          // first opens in reconstruction mode.
+          const instance = new C.ImageryLayer(provider, {
+            show:visible,
+            brightness:dark ? (layer.darkBrightness ?? 1) : 1,
+            saturation:1+(layer.saturation ?? 0),
+          });
+          viewer.imageryLayers.add(instance);
+          activeImagery.push({ definition:layer, instance });
+        }
+      } catch {
+        imageryFailure = `${definition.label} imagery could not start. Choose another map style above, or retry.`;
+      }
+    } else {
+      for (const { definition:layer, instance } of activeImagery) {
+        instance.show = visible;
+        instance.brightness = dark ? (layer.darkBrightness ?? 1) : 1;
+      }
+    }
+    viewer.scene.requestRender();
   });
   $effect(() => {
     if (!ready || !viewer) return;
@@ -78,8 +138,6 @@
   });
   $effect(() => {
     if (!ready || !viewer) return;
-    viewer.imageryLayers.get(0).show = !reconstruction;
-    viewer.imageryLayers.get(0).brightness = theme==='dark'?0.65:0.95;
     viewer.scene.backgroundColor = C.Color.fromCssColorString(theme==='dark'?'#18211e':'#d4dfe0');
     viewer.scene.globe.baseColor = C.Color.fromCssColorString('#b2ad83');
     viewer.scene.globe.material = reconstruction ? new C.Material({fabric:{
@@ -120,6 +178,11 @@
     <div class="cesium-controls"><button aria-label="Zoom in" onclick={()=>zoom(0.35)}>+</button><button aria-label="Zoom out" onclick={()=>zoom(-0.5)}>−</button><button aria-label="Face north" onclick={north}>N</button></div>
     <div class="map-legend"><span>CesiumJS · 3D</span><span>{reconstruction?'Modern relief · historical overlays':'Modern terrain'}</span></div>
   {/if}
-  {#if terrainState==='error'}<div class="tile-notice">Some elevation tiles could not load. Relief may be incomplete.</div>{/if}
+  {#if (imageryFailure && !reconstruction) || terrainState==='error'}
+    <div class="tile-notice" role="status">
+      {#if imageryFailure && !reconstruction}{imageryFailure} <button onclick={()=>imageryRetry++}>Retry imagery</button>{/if}
+      {#if terrainState==='error'} Some elevation tiles could not load. Relief may be incomplete.{/if}
+    </div>
+  {/if}
 </div>
 <p class="map-instructions">Drag to pan · scroll to zoom · Ctrl + drag to tilt or rotate. Terrain elevations are approximate; no archaeological vertical calibration is applied.</p>

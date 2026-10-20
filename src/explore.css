@@ -23,6 +23,16 @@
 .context-toolbar label { display: flex; flex-direction: column; gap: 5px; font-size: 10px; color: var(--muted); }
 .context-toolbar select, .model-card select { border: 1px solid var(--line); background: var(--white); color: var(--ink); padding: 9px 28px 9px 10px; border-radius: 4px; font-size: 12px; max-width: 100%; }
 .context-toolbar .map-mode { margin-left: auto; }
+.map-toolbar { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); align-items: center; gap: 16px; padding: 14px 0; border-block: 1px solid var(--line); margin-bottom: 24px; }
+.map-toolbar .segmented button { font-size: 11px; padding: 9px 12px; white-space: nowrap; }
+.map-toolbar .map-mode { justify-self: center; }
+.map-toolbar-settings { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+.map-toolbar-settings label, .evidence-period { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--muted); }
+.map-toolbar select, .evidence-period select { min-width: 0; max-width: 190px; padding: 8px 9px; border: 1px solid var(--line); border-radius: 4px; background: var(--paper); color: var(--ink); font-size: 11px; }
+.map-toolbar select:disabled { opacity: .55; cursor: not-allowed; }
+.evidence-period { margin-block: 14px; }
+@media(max-width:1250px) { .map-toolbar-settings { grid-column: 1 / -1; } }
+@media(max-width:650px) { .map-toolbar { gap: 10px; } .map-toolbar-scope, .map-toolbar .map-mode { grid-column: 1 / -1; justify-self: center; } .map-toolbar-scope:empty { display: none; } .map-toolbar .segmented button { padding: 8px; font-size: 10px; } .map-toolbar-settings { justify-content: center; flex-wrap: wrap; } .map-toolbar select { max-width: 170px; } }
 .atlas-layout { display: grid; grid-template-columns: minmax(0, 1fr) 275px; gap: 28px; }
 .atlas-main { min-width: 0; }
 .map-frame { position: relative; height: clamp(360px, 54vh, 670px); background: var(--green-light); border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }

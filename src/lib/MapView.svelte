@@ -2,10 +2,12 @@
   import { onMount } from 'svelte';
   import Map2D from './Map2D.svelte';
   import CesiumView from './CesiumView.svelte';
+  import MapToolbar from './MapToolbar.svelte';
+  import { savedImagery } from './imagery.js';
   import { json } from './data.js';
-  let { points = [], mode = '2d', theme = 'light', selected = '', selectedCandidate = '', onSelect = () => {} } = $props();
+  let { points = [], mode = $bindable('2d'), imagery = $bindable(savedImagery()), reconstruction = $bindable(false), showToolbar = true, theme = 'light', selected = '', selectedCandidate = '', onSelect = () => {} } = $props();
   let index = $state(null), studies = $state([]), studyError = $state('');
-  let reconstruction = $state(false), periodId = $state(''), showEvidence = $state(true);
+  let periodId = $state(''), showEvidence = $state(true);
   let useThreshold = $state(false), threshold = $state(-209);
   let request = 0;
   const placeIds = $derived([...new Set(points.map(p=>p.placeId))]);
@@ -23,19 +25,15 @@
     studies=[];useThreshold=false;studyError='';
     Promise.all(entries.map(s=>json(s.path))).then(data=>{if(ticket===request)studies=data;}).catch(()=>{if(ticket===request)studyError='A historical evidence study could not load.';});
   });
+  $effect(() => { if (!reconstruction) useThreshold = false; });
 </script>
+{#if showToolbar}<MapToolbar bind:mode bind:imagery bind:reconstruction />{/if}
 {#if mode === '3d'}
-  <div class="landscape-toolbar">
-    <div class="segmented" role="group" aria-label="Landscape view">
-      <button class:active={!reconstruction} aria-pressed={!reconstruction} onclick={()=>{reconstruction=false;useThreshold=false;}}>Modern landscape</button>
-      <button class:active={reconstruction} aria-pressed={reconstruction} onclick={()=>reconstruction=true}>Reconstruction lab</button>
-    </div>
-    {#if reconstruction && periods.length}<label>Evidence period <select aria-label="Historical evidence period" value={effectivePeriod?.id} onchange={e=>{periodId=e.currentTarget.value;useThreshold=false;}}>{#each periods as p}<option value={p.id}>{p.label}</option>{/each}</select></label>{/if}
-  </div>
-  <CesiumView {points} {theme} {selected} {selectedCandidate} {onSelect} {reconstruction} evidenceSites={sites} {showEvidence} threshold={useThreshold && reconstruction ? Number(threshold) : null} />
+  <CesiumView {points} {imagery} {theme} {selected} {selectedCandidate} {onSelect} {reconstruction} evidenceSites={sites} {showEvidence} threshold={useThreshold && reconstruction ? Number(threshold) : null} />
   {#if reconstruction}
     <section class="reconstruction-evidence">
       <div class="section-label">Reconstruction coverage <span>{covered} of {placeIds.length} place records have dated evidence studies</span></div>
+      {#if periods.length}<label class="evidence-period">Evidence period <select aria-label="Historical evidence period" value={effectivePeriod?.id} onchange={e=>{periodId=e.currentTarget.value;useThreshold=false;}}>{#each periods as p}<option value={p.id}>{p.label}</option>{/each}</select></label>{/if}
       <p>Modern terrain with ancient place identifications. Modern roads and labels are hidden. A dated shoreline, river course, or building reconstruction is shown only when a sourced geometry is available.</p>
       {#if studyError}<p class="error-note">{studyError}</p>{/if}
       {#if !studies.length}
@@ -56,5 +54,5 @@
     </section>
   {/if}
 {:else}
-  <Map2D {points} {theme} {selected} {selectedCandidate} {onSelect} />
+  <Map2D {points} {imagery} {theme} {selected} {selectedCandidate} {onSelect} />
 {/if}

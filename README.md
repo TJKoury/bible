@@ -112,9 +112,22 @@ Those checks remain visible review questions. Retrieval uses BM25 and source
 diversity rather than a semantic embedding model, so ambiguous vocabulary can
 produce irrelevant matches. Users can inspect and change the evidence packet.
 
-Map tiles load online from OpenStreetMap and elevation from Mapterhorn; no tiles
-are bulk downloaded. Set `VITE_MAP_TILES` to a compatible raster endpoint to use
-another provider, and update attribution for that provider. Maps show modern
+The Research desk keeps the conversation and references in separate scrolling
+panels, with a question timeline for revisiting earlier research in the current
+session. Each question retains its reading context, evidence selection, and
+answer. The Advanced tab contains device checks, model downloads, corpus details,
+and training information. Research retrieves sources and, when a local model is
+loaded, drafts a cited comparison in the same action.
+
+The shared map toolbar offers Streets (OpenStreetMap), Topographic (OpenTopoMap),
+Satellite, and Satellite + labels in both 2D and Cesium 3D. Satellite uses the
+[EOX Cloudless 2016 mosaic](https://maps.eox.at/) under CC BY 4.0, with optional
+EOX/MapServer labels from OpenStreetMap. Its year is shown in the selector; it is
+not live imagery. Provider credits remain on the map. The selected imagery
+persists in this browser, while changing layers preserves the camera and selected
+candidate. Tiles stream on demand; no tiles are bulk downloaded. Elevation comes
+from Mapterhorn. Set `VITE_MAP_TILES` to a compatible raster endpoint to replace
+the Streets layer, and update its attribution in `src/lib/imagery.js`. Maps show modern
 terrain at native scale. The reconstruction lab hides modern map labels and shows
 dated evidence by period where available. Its registry covers every atlas place;
 only four linked place records currently have a dated evidence study, and no ancient
