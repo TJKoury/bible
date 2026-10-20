@@ -1,8 +1,9 @@
 import { createIndex, searchIndex, dossierDocuments } from './retrieval.js';
+import { assetUrl } from './data.js';
 let index;
 let catalog;
 let setup;
-async function get(path) { const response = await fetch(path); if (!response.ok) throw new Error(`Could not load ${path}`); return response.json(); }
+async function get(path) { const response = await fetch(assetUrl(path)); if (!response.ok) throw new Error(`Could not load ${path}`); return response.json(); }
 async function load() {
   const [manifest, chunks, books, encyclopedia] = await Promise.all([
     get('/data/research/manifest.json'), get('/data/research/chunks.json'), get('/data/catalog.json'), get('/data/encyclopedia/index.json'),
@@ -51,7 +52,7 @@ self.onmessage = async ({data}) => {
       // A question with an explicit passage also retrieves its actual text.
       const normalized = data.question.toLowerCase();
       const matching = catalog.books.find(b => b.id <= 66 && new RegExp(`\\b${b.name.toLowerCase()}\\s+\\d+`).test(normalized));
-      if (matching && (!data.traditions.length || data.traditions.includes('Biblical texts'))) {
+      if (matching && data.context?.aligned !== false && (!data.traditions.length || data.traditions.includes('Biblical texts'))) {
         const [,chapter,verse] = normalized.match(new RegExp(`\\b${matching.name.toLowerCase()}\\s+(\\d+)(?::(\\d+))?`)) || [];
         const chapterDocs = index.documents.filter(d => d.ref?.startsWith(`${matching.id}.${chapter}.`));
         const exact = verse ? chapterDocs.find(d => { const v = Number(d.ref.split('.')[2]); return Number(verse) >= v && Number(verse) < v + 3; }) : chapterDocs[0];
@@ -76,6 +77,11 @@ self.onmessage = async ({data}) => {
           return best ? {...best,sourceUrl:article.revisionUrl} : doc;
         } catch { return doc; }
       }));
+      if(data.context?.passageText && (!data.traditions.length || data.traditions.includes('Biblical texts'))) {
+        const ctx=data.context;
+        const current={id:`reading-${ctx.key}`,sourceId:`reading-${ctx.edition}-${ctx.book}`,title:`${ctx.label} · surrounding passage`,author:ctx.book<=39?'Hebrew Bible':'Biblical text',tradition:'Biblical texts',perspective:ctx.editionTitle,ref:ctx.ref,edition:ctx.edition,locator:`Current reading · ${ctx.edition}`,text:ctx.passageText,sourceUrl:new URL(assetUrl(`/data/translations/${ctx.edition}/${ctx.book}.json`),self.location.href).href,license:catalog.translations.find(t=>t.id===ctx.edition)?.license};
+        result=[current,...result].slice(0,16);
+      }
       self.postMessage({type:'results',request:data.request,results:result});
     }
   } catch (e) { self.postMessage({type:'error',request:data.request,message:e.message}); }

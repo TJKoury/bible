@@ -86,10 +86,13 @@ not regenerated from the primary-text corpus.
 
 ## Training preparation and actual status
 
-**This downloads and prepares data; it does not train a custom language model.**
-No custom language-model weights, theological benchmark score, or verified
-training improvement is claimed. A pretrained model used by the browser may
-answer with retrieval context, but that is not fine-tuning.
+The downloader/exporter prepares data; it does not itself train a model.
+An actual **Qwen3-0.6B QLoRA experiment** has now been run on this historical
+collection, with preserved base weights, adapters, merged/quantized outputs,
+held-out losses and qualitative probes. See
+[`docs/training-small-model.md`](training-small-model.md) for reproduction and
+the measured limitations. The older 4B recipe below remains an unrun example.
+Retrieval context used by the app is still distinct from fine-tuning.
 
 ```sh
 python3 scripts/prepare_training.py --equalize-traditions

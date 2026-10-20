@@ -123,7 +123,7 @@
 
 <aside class:mobile-active={mobileOpen} class="study-pane" aria-label="Verse study">
   {#if mobileOpen}<button class="icon-button mobile-study-close" aria-label="Close verse study" onclick={() => mobileOpen = false}><Icon name="x" /></button>{/if}
-  <div class="study-topline"><span class="eyebrow">LOOK A LITTLE CLOSER</span><span class="study-spark">✦</span></div>
+  <div class="study-topline"><span class="eyebrow">VERSE STUDY</span></div>
   <div class="study-title-row"><h2>{label(ref)}</h2><button class:is-saved={isSaved} class="icon-button" aria-label={isSaved ? 'Unsave selected verse' : 'Save selected verse'} aria-pressed={isSaved} onclick={onSave}><Icon name="bookmark" /></button></div>
   <blockquote>{text || 'Select a verse to begin exploring.'}</blockquote>
   <EntityLinks {book} {chapter} {verse} {text} gloss={word?.gloss || ''} aligned={eligible} {onArticle} {onMap} />

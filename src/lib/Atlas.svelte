@@ -27,18 +27,16 @@
 </script>
 
 <section class="explore-view atlas-view">
-  <div class="explore-heading"><div><p class="eyebrow">SCRIPTURE IN ITS LANDSCAPE</p><h1>The places behind the words.</h1><p>Explore the geography of a passage, with room for uncertainty.</p></div><span class="outline-badge"><Icon name="map" />Biblical atlas</span></div>
+  <div class="explore-heading"><h1>Geography & maps</h1></div>
   <div class="context-toolbar">
-    <label>Book<select aria-label="Atlas book" value={book} onchange={e => onPassage(Number(e.currentTarget.value), 1, 1)}>{#each edition.books as b}<option value={b.id}>{catalog.books.find(x => x.id === b.id)?.name}</option>{/each}</select></label>
-    <label>Chapter<select aria-label="Atlas chapter" value={chapter} onchange={e => onPassage(book, Number(e.currentTarget.value), 1)}>{#each chapters as c}<option value={c}>{c}</option>{/each}</select></label>
     <div class="segmented" role="group" aria-label="Map passage scope">{#each ['chapter', 'verse'] as s}<button class:active={scope === s} aria-pressed={scope === s} onclick={() => scope = s}>{s === 'chapter' ? 'Whole chapter' : `Verse ${verse}`}</button>{/each}</div>
-    <div class="segmented map-mode" role="group" aria-label="Map dimensions"><button class:active={mode === '2d'} aria-pressed={mode === '2d'} onclick={() => mode = '2d'}>2D map</button><button class:active={mode === '3d'} aria-pressed={mode === '3d'} onclick={() => mode = '3d'}>3D terrain</button></div>
+    <div class="segmented map-mode" role="group" aria-label="Map dimensions"><button class:active={mode === '2d'} aria-pressed={mode === '2d'} onclick={() => mode = '2d'}>2D map</button><button class:active={mode === '3d'} aria-pressed={mode === '3d'} onclick={() => mode = '3d'}>Cesium 3D</button></div>
   </div>
   {#if error}<p class="error-note">{error} <button onclick={load}>Retry</button></p>{/if}
   <div class="atlas-layout">
     <div class="atlas-main">
       <MapView {points} {mode} {theme} {selected} onSelect={id => selected = id} />
-      <p class="source-caption">Modern terrain and shorelines, not a reconstruction of the ancient landscape. Online tiles: OpenStreetMap · <a href="https://mapterhorn.com/attribution/" target="_blank" rel="noreferrer">Mapterhorn elevation</a>. Locations: <a href="https://www.openbible.info/geo/" target="_blank" rel="noreferrer">OpenBible.info · CC BY 4.0</a>.</p>
+      <p class="source-caption">Modern terrain; dated historical evidence is available in the reconstruction lab where sourced. Online tiles: OpenStreetMap · <a href="https://mapterhorn.com/attribution/" target="_blank" rel="noreferrer">Mapterhorn elevation</a>. Locations: <a href="https://www.openbible.info/geo/" target="_blank" rel="noreferrer">OpenBible.info · CC BY 4.0</a>.</p>
       {#if currentPlace}
         <div class="atlas-detail">
           <p class="eyebrow">PLACE RECORD</p><h2>{currentPlace.name}</h2>

@@ -5,7 +5,7 @@
   import Atlas from './lib/Atlas.svelte';
   import Encyclopedia from './lib/Encyclopedia.svelte';
   import Research from './lib/Research.svelte';
-  import { json, shortName, referenceLabel, parseReference, inverseMapping, storageRead, storageWrite } from './lib/data.js';
+  import { json, assetUrl, shortName, referenceLabel, parseReference, inverseMapping, storageRead, storageWrite } from './lib/data.js';
 
   let catalog = $state(null);
   let verseMap = $state({});
@@ -22,10 +22,12 @@
   let articleId = $state('');
   let researchStarted = $state(false);
   let researchRequest = $state(null);
+  let articleAnchor = '';
   let testament = $state('NT');
   let sidebarOpen = $state(false);
   let focused = $state(false);
   let loading = $state(true);
+  let loadedBook = $state('');
   let bootError = $state('');
   let passageError = $state('');
   let comparisonError = $state('');
@@ -46,7 +48,8 @@
   const edition = $derived(catalog?.translations.find(t => t.id === translation));
   const currentBook = $derived(catalog?.books.find(b => b.id === book));
   const bookMeta = $derived(edition?.books.find(b => b.id === book));
-  const verses = $derived(bookText[chapter] || {});
+  const passageReady = $derived(loadedBook === `${translation}/${book}`);
+  const verses = $derived(passageReady ? bookText[chapter] || {} : {});
   const selectedText = $derived(verses[verse] || '');
   const currentRef = $derived(`${book}.${chapter}.${verse}`);
   const availableBooks = $derived(catalog?.books.filter(b => edition?.books.some(item => item.id === b.id)) || []);
@@ -54,6 +57,17 @@
   const isSaved = $derived(saved.some(item => item.ref === currentRef && item.edition === translation));
   const comparisonEditions = $derived(catalog?.translations.filter(t => t.numbering === 'english' && t.id !== translation) || []);
   const aligned = $derived(edition?.numbering === 'english');
+  const readingContext = $derived({
+    key:`${translation}/${currentRef}`, ref:currentRef, book,chapter,verse,
+    label:referenceLabel(currentRef,catalog?.books || []),bookName:currentBook?.name,
+    edition:translation,editionTitle:edition?.title,aligned,loading:loading || !passageReady,
+    text:selectedText,
+    passageText:Object.entries(verses).filter(([v])=>Math.abs(Number(v)-verse)<=3).map(([v,t])=>`${v} ${t}`).join(' '),
+  });
+  $effect(() => {
+    const key = readingContext.key;
+    if(key!==articleAnchor){articleAnchor=key;articleId='';}
+  });
 
   onMount(() => {
     const position = storageRead('scripture-position', null);
@@ -104,6 +118,7 @@
       const result = await json(`/data/translations/${id}/${bid}.json`);
       if (request !== passageRequest) return;
       bookText = result;
+      loadedBook = `${id}/${bid}`;
       if (result[chapter] && !result[chapter][verse]) verse = Number(Object.keys(result[chapter])[0]);
     } catch {
       if (request === passageRequest) passageError = 'This passage could not load. Check your connection and retry.';
@@ -208,8 +223,9 @@
   }
   function setView(value) { view = value; if (value === 'research') researchStarted = true; sidebarOpen = false; focused = false; window.scrollTo(0, 0); }
   function openArticle(id) { articleId = id; setView('encyclopedia'); }
-  function openResearch(question = '') { researchRequest = { question }; setView('research'); }
+  function openResearch(question = '') { researchRequest = { question, contextKey:readingContext.key }; setView('research'); }
   function atlasPassage(b, c, v) { navigate(`${b}.${c}.${v}`, translation, false); setView('atlas'); }
+  function changeContext(b,c,v) { const currentView=view;navigate(`${b}.${c}.${v}`,translation,false);setView(currentView); }
   async function openSearch() { searchDialog.showModal(); await tick(); searchField.focus(); }
   function keyboard(event) {
     if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName) && !document.querySelector('dialog[open]')) {
@@ -285,8 +301,8 @@
 <a class="skip-link" href="#passage">Skip to passage</a>
 <header class="topbar">
   <button class="icon-button mobile-menu" aria-label="Toggle navigation" aria-expanded={sidebarOpen} onclick={() => sidebarOpen = !sidebarOpen}><Icon name="menu" /></button>
-  <a class="brand" href="/" onclick={event => { event.preventDefault(); setView('reader'); }}><span class="brand-mark">s</span>scripture<span class="brand-period">.</span></a>
-  <span class="brand-caption">A little closer to the Word.</span>
+  <a class="brand" href={assetUrl('')} onclick={event => { event.preventDefault(); setView('reader'); }}><span class="brand-mark">s</span>scripture<span class="brand-period">.</span></a>
+  {#if catalog}<button class="reading-anchor" onclick={()=>setView('reader')} title="Return to current passage">{readingContext.label}<span>{shortName(translation)}</span></button>{/if}
   <button class="search-trigger" aria-label="Find a passage or phrase" onclick={openSearch} disabled={!catalog}><Icon name="search" /><span>Find a passage or phrase</span><kbd>/</kbd></button>
   <button class="icon-button" aria-label="Reading appearance" onclick={() => settingsDialog.showModal()}><span class="aa">Aa</span></button>
   <button class="icon-button theme-toggle" aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'} title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'} onclick={() => theme = theme === 'light' ? 'dark' : 'light'}><Icon name={theme === 'light' ? 'moon' : 'sun'} /></button>
@@ -315,17 +331,26 @@
           <button class="book-button" class:active={book === item.id} onclick={() => navigate(`${item.id}.1.1`)} aria-current={book === item.id ? 'true' : undefined}>{item.name}{#if book === item.id}<span class="book-indicator"></span>{:else}<small>{edition.books.find(b => b.id === item.id)?.chapters.length}</small>{/if}</button>
         {/each}
       </div>
-      <button class="sidebar-foot" onclick={() => sourcesDialog.showModal()}><span class="source-dot"></span>Open texts. Deeper understanding.<Icon name="arrow-up-right" /></button>
+      <button class="sidebar-foot" onclick={() => sourcesDialog.showModal()}><span class="source-dot"></span>Sources & attribution<Icon name="arrow-up-right" /></button>
     </aside>
     <main class="main-content">
+      {#if view !== 'reader'}
+        <div class="shared-context" aria-label="Current reading context">
+          <span>Reading</span>
+          <select aria-label="Context book" value={book} onchange={e=>changeContext(Number(e.currentTarget.value),1,1)}>{#each availableBooks as item}<option value={item.id}>{item.name}</option>{/each}</select>
+          <select aria-label="Context chapter" value={chapter} onchange={e=>changeContext(book,Number(e.currentTarget.value),1)}>{#each bookMeta?.chapters || [] as c}<option value={c}>Chapter {c}</option>{/each}</select>
+          <select aria-label="Context verse" value={verse} onchange={e=>changeContext(book,chapter,Number(e.currentTarget.value))}>{#each Object.keys(verses) as v}<option value={Number(v)}>Verse {v}</option>{/each}</select>
+          <span>{shortName(translation)}</span><button class="subtle-button" onclick={()=>setView('reader')}>Read passage<Icon name="arrow-right" /></button>
+        </div>
+      {/if}
       {#if view === 'reader'}
         <div class="reader-layout">
           <section class="reading-pane" aria-label="Scripture reader">
             <div class="passage-navigation"><div class="breadcrumb"><span>{currentBook?.testament === 'OT' ? 'Old Testament' : currentBook?.testament === 'NT' ? 'New Testament' : 'Additional books'}</span><span>/</span><span>{currentBook?.name}</span></div><button class="icon-button" aria-label="Toggle focused reading" aria-pressed={focused} onclick={() => focused = !focused}><Icon name="expand" /></button></div>
             <div class="chapter-heading">
-              <p class="eyebrow">{[40, 41, 42, 43].includes(book) ? 'THE GOSPEL ACCORDING TO' : book <= 39 ? 'FROM THE HEBREW SCRIPTURES' : book <= 66 ? 'FROM THE NEW TESTAMENT' : 'FROM THE TRANSLATION LIBRARY'}</p>
+
               <div class="chapter-title-row"><h1>{currentBook?.name} <span>{chapter}</span></h1><div class="chapter-arrows"><button class="icon-button" aria-label="Previous chapter" disabled={!adjacent(-1)} onclick={() => moveChapter(-1)}><Icon name="chevron-left" /></button><button class="icon-button" aria-label="Next chapter" disabled={!adjacent(1)} onclick={() => moveChapter(1)}><Icon name="chevron-right" /></button></div></div>
-              <p class="chapter-subtitle">Read slowly. Follow the connections.</p>
+
             </div>
             <div class="reader-toolbar">
               <label class="select-wrap translation-select"><Icon name="globe" /><select aria-label="Bible translation" value={translation} onchange={event => changeTranslation(event.currentTarget.value)}>{#each catalog.translations as item}<option value={item.id}>{shortName(item.id)} · {item.title}</option>{/each}</select></label>
@@ -357,22 +382,22 @@
       {:else if view === 'atlas'}
         <Atlas {catalog} {book} {chapter} {verse} {edition} {theme} onPassage={atlasPassage} onArticle={openArticle} />
       {:else if view === 'encyclopedia'}
-        <Encyclopedia selectedId={articleId} {book} {chapter} {verse} text={selectedText} {aligned} {theme} onSelect={openArticle} onMap={() => setView('atlas')} onResearch={openResearch} />
+        <Encyclopedia selectedId={articleId} {book} {chapter} {verse} text={selectedText} {aligned} {theme} contextLabel={readingContext.label} onSelect={openArticle} onMap={() => setView('atlas')} onResearch={openResearch} />
       {:else if view === 'library'}
         <section class="collection-view">
-          <p class="eyebrow">MANY TRANSLATIONS. ONE PLACE TO EXPLORE.</p><h1>A library for deeper reading.</h1>
-          <p class="collection-lead">Familiar words. Fresh perspectives. Read, compare, and download the source editions in this library, with their provenance always close at hand.</p>
+          <h1>Translation library</h1>
+          <p class="collection-lead">Read, compare, and download editions with their source and license information.</p>
           <div class="library-stats"><div class="library-stat"><strong>{catalog.translations.length}</strong><span>English editions downloaded</span></div><div class="library-stat"><strong>2</strong><span>Original-language datasets</span></div><div class="library-stat"><strong>{Math.round(catalog.crossReferences / 1000)}k</strong><span>Verse cross-references</span></div></div>
           <div class="section-label">YOUR TRANSLATIONS<span>JSON DOWNLOADS · ZIP ARCHIVES</span></div>
           <div class="library-table">
             {#each catalog.translations as item}
-              <div class="library-row"><span class="edition-monogram">{shortName(item.id)}</span><div class="edition-description"><h3>{item.title}</h3><p>{item.subtitle} · {item.books.length} books · {item.verses.toLocaleString()} verses<br>{item.license}{#if item.sourceGaps?.length} · {item.sourceGaps.length} source gaps noted in text{/if}</p></div><span class="installed"><Icon name="check" />Downloaded</span><button class="subtle-button" onclick={() => changeTranslation(item.id)}>Read<Icon name="arrow-right" /></button><a class="subtle-button" href={`/data/downloads/${item.id}.zip`} download={`${item.id}.zip`} aria-label={`Download ${item.title}`}><Icon name="download" />ZIP</a></div>
+              <div class="library-row"><span class="edition-monogram">{shortName(item.id)}</span><div class="edition-description"><h3>{item.title}</h3><p>{item.subtitle} · {item.books.length} books · {item.verses.toLocaleString()} verses<br>{item.license}{#if item.sourceGaps?.length} · {item.sourceGaps.length} source gaps noted in text{/if}</p></div><span class="installed"><Icon name="check" />Downloaded</span><button class="subtle-button" onclick={() => changeTranslation(item.id)}>Read<Icon name="arrow-right" /></button><a class="subtle-button" href={assetUrl(`/data/downloads/${item.id}.zip`)} download={`${item.id}.zip`} aria-label={`Download ${item.title}`}><Icon name="download" />ZIP</a></div>
             {/each}
           </div>
-          <h2 class="collection-section-title">Closer to the original.</h2>
+          <h2 class="collection-section-title">Original languages</h2>
           <div class="resource-grid">
-            <div class="resource-card"><h3><span lang="he">בְּרֵאשִׁית</span> &nbsp; Hebrew & Aramaic</h3><p>Westminster Leningrad Codex with MACULA morphology, lemmas, transliteration, contextual glosses, and concordance data. Includes segmented prefixes and suffixes.</p><a class="subtle-button" href="/data/downloads/hebrew.zip" download><Icon name="download" />Download study data</a></div>
-            <div class="resource-card"><h3><span lang="grc">Ἐν ἀρχῇ</span> &nbsp; Greek</h3><p>SBL Greek New Testament with MACULA morphology, lemmas, contextual glosses, and concordance data. Follow each lemma through the entire New Testament.</p><a class="subtle-button" href="/data/downloads/greek.zip" download><Icon name="download" />Download study data</a></div>
+            <div class="resource-card"><h3><span lang="he">בְּרֵאשִׁית</span> &nbsp; Hebrew & Aramaic</h3><p>Westminster Leningrad Codex with MACULA morphology, lemmas, transliteration, contextual glosses, and concordance data. Includes segmented prefixes and suffixes.</p><a class="subtle-button" href={assetUrl('/data/downloads/hebrew.zip')} download><Icon name="download" />Download study data</a></div>
+            <div class="resource-card"><h3><span lang="grc">Ἐν ἀρχῇ</span> &nbsp; Greek</h3><p>SBL Greek New Testament with MACULA morphology, lemmas, contextual glosses, and concordance data. Follow each lemma through the entire New Testament.</p><a class="subtle-button" href={assetUrl('/data/downloads/greek.zip')} download><Icon name="download" />Download study data</a></div>
           </div>
           <h2 class="collection-section-title">Other major translations</h2>
           <p class="collection-lead">These editions are not installed. Full-text storage and redistribution require a suitable publisher license or authorized service. The links below lead to publisher information; no copyrighted text has been downloaded for these entries.</p>
@@ -380,14 +405,14 @@
           <p class="source-caption library-footnote">Downloaded editions are stored with this app. ZIP downloads contain JSON text and source metadata; they do not install an offline web app. <button class="text-button" onclick={() => sourcesDialog.showModal()}>View sources & attribution</button></p>
         </section>
       {:else if view === 'saved'}
-        <section class="collection-view"><p class="eyebrow">WORDS TO RETURN TO</p><h1>Your saved passages.</h1><p class="collection-lead">A quiet place for the verses you want to revisit. Saved in this browser on this device.</p>
-          {#if !saved.length}<div class="resource-card"><h3>Keep a passage close.</h3><p>Select a verse in the reader and use the bookmark button to save it here.</p><button class="subtle-button" onclick={() => setView('reader')}>Back to reading<Icon name="arrow-right" /></button></div>{/if}
+        <section class="collection-view"><h1>Saved passages</h1><p class="collection-lead">Saved in this browser on this device.</p>
+          {#if !saved.length}<div class="resource-card"><h3>No saved passages</h3><p>Select a verse in the reader and use the bookmark button to save it here.</p><button class="subtle-button" onclick={() => setView('reader')}>Back to reading<Icon name="arrow-right" /></button></div>{/if}
           {#each saved as item (item.ref + item.edition)}<div class="saved-card"><div class="saved-card-head"><button onclick={() => navigate(item.ref, item.edition)}>{label(item.ref)}<small>{shortName(item.edition)}</small></button><button class="icon-button" aria-label={`Remove ${label(item.ref)} from saved passages`} onclick={() => removeSaved(item)}><Icon name="trash" /></button></div><p>{item.text}</p></div>{/each}
         </section>
       {/if}
       {#if researchStarted}
         <div hidden={view !== 'research'}>
-          <Research questionRequest={researchRequest} onNavigate={navigate} onArticle={openArticle} />
+          <Research questionRequest={researchRequest} context={readingContext} active={view === 'research'} onNavigate={navigate} onArticle={openArticle} />
         </div>
       {/if}
     </main>
@@ -404,24 +429,24 @@
 </dialog>
 
 <dialog bind:this={settingsDialog} class="small-dialog">
-  <div class="dialog-heading"><h2>Make room to read.</h2><button class="icon-button" aria-label="Close appearance" onclick={() => settingsDialog.close()}><Icon name="x" /></button></div>
+  <div class="dialog-heading"><h2>Reading appearance</h2><button class="icon-button" aria-label="Close appearance" onclick={() => settingsDialog.close()}><Icon name="x" /></button></div>
   <label class="setting-row" for="font-size">Text size<output>{fontSize}px</output></label><input type="range" id="font-size" min="17" max="27" step="1" bind:value={fontSize} />
-  <div class="setting-row">Page theme<div class="segmented">{#each [['light', 'Paper'], ['dark', 'Evening']] as [value, title]}<button class:active={theme === value} aria-pressed={theme === value} onclick={() => theme = value}>{title}</button>{/each}</div></div>
+  <div class="setting-row">Page theme<div class="segmented">{#each [['light', 'Light'], ['dark', 'Dark']] as [value, title]}<button class:active={theme === value} aria-pressed={theme === value} onclick={() => theme = value}>{title}</button>{/each}</div></div>
   <p class="setting-sample">In him was life, and the life was the light of men.</p>
 </dialog>
 
 <dialog bind:this={sourcesDialog} class="sources-dialog">
-  <div class="dialog-heading"><h2>Texts with a source.</h2><button class="icon-button" aria-label="Close sources" onclick={() => sourcesDialog.close()}><Icon name="x" /></button></div>
+  <div class="dialog-heading"><h2>Sources & attribution</h2><button class="icon-button" aria-label="Close sources" onclick={() => sourcesDialog.close()}><Icon name="x" /></button></div>
   <div>
     <p>Scripture presents downloaded texts and scholarly datasets. Connections based on the same lemma are lexical matches; a shared word does not establish identical meaning or a theological conclusion.</p>
     <h3>English translation texts</h3><p>Public-domain editions are distributed through <a href="https://github.com/scrollmapper/bible_databases" target="_blank" rel="noreferrer">Scrollmapper’s Bible databases</a> (database tooling: MIT). The <a href="https://berean.bible/licensing.htm" target="_blank" rel="noreferrer">Berean Standard Bible is public domain</a>. The <a href="https://ebible.org/engwebp/copyright.htm" target="_blank" rel="noreferrer">World English Bible is public domain</a>, downloaded from <a href="https://github.com/TehShrike/world-english-bible" target="_blank" rel="noreferrer">TehShrike’s text repository</a>. KJV Crown rights apply in the United Kingdom. Book totals reflect each supplied edition, including any source appendices.</p>
-    <p>KJV text comes from <a href="https://github.com/thiagobodruk/bible" target="_blank" rel="noreferrer">Thiago Bodruk’s Bible repository</a> (<a href="/licenses/KJV-repository-MIT.txt">repository license</a>). Source snapshots contain some empty verse entries, caused by edition omissions, numbering differences, or upstream extraction gaps. These are disclosed in the reader and download metadata. Entirely empty books and chapters are excluded.</p>
+    <p>KJV text comes from <a href="https://github.com/thiagobodruk/bible" target="_blank" rel="noreferrer">Thiago Bodruk’s Bible repository</a> (<a href={assetUrl('/licenses/KJV-repository-MIT.txt')}>repository license</a>). Source snapshots contain some empty verse entries, caused by edition omissions, numbering differences, or upstream extraction gaps. These are disclosed in the reader and download metadata. Entirely empty books and chapters are excluded.</p>
     <h3>Original-language texts & annotations</h3><p><a href="https://github.com/Clear-Bible/macula-hebrew/" target="_blank" rel="noreferrer">MACULA Hebrew Linguistic Datasets</a> and <a href="https://github.com/Clear-Bible/macula-greek/" target="_blank" rel="noreferrer">MACULA Greek Linguistic Datasets</a>, © 2022–2024 Biblica, Inc., CC BY 4.0. Original work of the Open Scriptures Hebrew Bible available at <a href="https://github.com/openscriptures/morphhb" target="_blank" rel="noreferrer">Open Scriptures</a>. Westminster Leningrad Codex text is public domain. Hebrew glosses: Cherith Glosses by Andi Wu, © 2022 Cherith Analytics, CC BY 4.0. Greek glosses: Berean Interlinear Bible, public domain.</p>
-    <p>SBL Greek New Testament, © 2010 Society of Biblical Literature and Logos Bible Software, <a href="/licenses/SBLGNT.txt">CC BY 4.0</a>. Data has been converted into chapter JSON and lemma indexes; UBS semantic-domain fields are omitted. <a href="/licenses/macula-hebrew.md">Full Hebrew notices</a> · <a href="/licenses/macula-greek.md">Full Greek notices</a>.</p>
-    <h3>References & verse numbering</h3><p><a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noreferrer">OpenBible.info cross-references</a>, CC BY. Entries retain source vote rankings and ranges. Hebrew/English verse mapping comes from <a href="https://github.com/sillsdev/libpalaso" target="_blank" rel="noreferrer">SIL libpalaso</a> (<a href="/licenses/SIL.txt">license</a>). Whole-verse mappings are applied; some split-verse distinctions and textual variants are not represented. Native-numbered JPS, DRC, and CPDV editions remain readable, but automatic study alignment is disabled for them.</p>
+    <p>SBL Greek New Testament, © 2010 Society of Biblical Literature and Logos Bible Software, <a href={assetUrl('/licenses/SBLGNT.txt')}>CC BY 4.0</a>. Data has been converted into chapter JSON and lemma indexes; UBS semantic-domain fields are omitted. <a href={assetUrl('/licenses/macula-hebrew.md')}>Full Hebrew notices</a> · <a href={assetUrl('/licenses/macula-greek.md')}>Full Greek notices</a>.</p>
+    <h3>References & verse numbering</h3><p><a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noreferrer">OpenBible.info cross-references</a>, CC BY. Entries retain source vote rankings and ranges. Hebrew/English verse mapping comes from <a href="https://github.com/sillsdev/libpalaso" target="_blank" rel="noreferrer">SIL libpalaso</a> (<a href={assetUrl('/licenses/SIL.txt')}>license</a>). Whole-verse mappings are applied; some split-verse distinctions and textual variants are not represented. Native-numbered JPS, DRC, and CPDV editions remain readable, but automatic study alignment is disabled for them.</p>
     <h3>Encyclopedia, geography & research</h3><p>Wikipedia article excerpts are adapted and abridged under CC BY-SA 4.0. Each entry links to its source revision and contributor history. OpenBible.info geography is CC BY 4.0; candidate identifications and uncertainty are preserved. Map imagery uses OpenStreetMap contributors and Mapterhorn terrain data, requested online.</p>
-    <p>The <a href="/data/research/manifest.json">research source manifest</a> records authors, perspectives, dates, licenses, and coverage gaps. Historical texts do not represent every contemporary believer or school. The optional WebGPU assistant uses a pretrained Qwen3 model, not a custom theological model. Source search and inference run in this browser; model downloads use Hugging Face and GitHub.</p>
-    <p>Download the <a href="/data/sources.json" download>source URLs and SHA-256 checksums</a>. Each translation download includes its source and rights information. Code licensing does not replace the individual dataset licenses.</p>
+    <p>The <a href={assetUrl('/data/research/manifest.json')}>research source manifest</a> records authors, perspectives, dates, licenses, and coverage gaps. Historical texts do not represent every contemporary believer or school. The optional WebGPU assistant uses Qwen3. The Research desk distinguishes pretrained browser models from experimental custom training artifacts and reports their evaluation limits. Source search and inference run in this browser; model downloads use Hugging Face and GitHub.</p>
+    <p>Download the <a href={assetUrl('/data/sources.json')} download>source URLs and SHA-256 checksums</a>. Each translation download includes its source and rights information. Code licensing does not replace the individual dataset licenses.</p>
   </div>
 </dialog>
 <div id="toast" class:visible={Boolean(toast)} role="status" aria-live="polite">{toast}</div>

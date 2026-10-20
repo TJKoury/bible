@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@mlc-ai/web-llm": "0.2.86",
+    "cesium": "1.146.0",
     "maplibre-gl": "6.15.0"
   }
 }

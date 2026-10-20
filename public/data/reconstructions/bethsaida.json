@@ -1,0 +1,275 @@
+{
+  "schemaVersion": 1,
+  "id": "bethsaida",
+  "title": "Northern Sea of Galilee and Bethsaida",
+  "placeIds": ["a91b732", "a9fc13a", "a562fcc", "af75e9e"],
+  "scope": "A source-based evidence study, not an ancient terrain reconstruction. Modern site reference points locate competing identifications; the available reports do not supply reusable, georeferenced ancient shorelines or river courses.",
+  "reviewedAt": "2026-10-20",
+  "status": "dated-evidence-only",
+  "periods": [
+    {
+      "id": "first-century-ce",
+      "label": "1st century CE",
+      "startYear": 1,
+      "endYear": 100,
+      "summary": "A viewing interval for evidence associated with the early Roman landscape. Some reported occupation and lake-level estimates span a wider period.",
+      "claimIds": ["el-araj-roman", "et-tell-roman", "roman-water-level-disagreement"],
+      "waterLevelAlternativeIds": ["early-roman-published-range", "el-araj-roman-wall"]
+    },
+    {
+      "id": "byzantine",
+      "label": "Byzantine period",
+      "startYear": 300,
+      "endYear": 700,
+      "summary": "A broad regional viewing interval, not a claim that every feature existed throughout these four centuries.",
+      "claimIds": ["el-araj-deposition", "el-araj-church", "el-araj-earlier-compound", "byzantine-water-level"],
+      "waterLevelAlternativeIds": ["byzantine-kursi-upper-bound"]
+    }
+  ],
+  "sites": [
+    {
+      "id": "el-araj",
+      "name": "El-Araj",
+      "candidateId": "m00b3ac",
+      "placeIds": ["a91b732", "a9fc13a"],
+      "geometry": {"type": "Point", "coordinates": [35.619, 32.893528]},
+      "coordinateSource": "openbible",
+      "coordinateSourceUrl": "https://www.openbible.info/geo/ancient/bethsaida-1",
+      "coordinateMeaning": "Modern reference point for the candidate site, not a surveyed excavation feature.",
+      "horizontalAccuracyMeters": null,
+      "periodIds": ["first-century-ce", "byzantine"],
+      "claimIds": ["el-araj-roman", "el-araj-deposition", "el-araj-church", "el-araj-earlier-compound"],
+      "interpretation": "Proposed identification with Bethsaida; disputed.",
+      "footprint": null
+    },
+    {
+      "id": "et-tell",
+      "name": "Et-Tell",
+      "candidateId": "m1ec77e",
+      "placeIds": ["a91b732", "a9fc13a"],
+      "geometry": {"type": "Point", "coordinates": [35.63096, 32.91038]},
+      "coordinateSource": "openbible",
+      "coordinateSourceUrl": "https://www.openbible.info/geo/ancient/bethsaida-1",
+      "coordinateMeaning": "Modern reference point for the candidate site, not a surveyed excavation feature.",
+      "horizontalAccuracyMeters": null,
+      "periodIds": ["first-century-ce"],
+      "claimIds": ["et-tell-roman"],
+      "interpretation": "Proposed identification with Bethsaida; disputed. Byzantine occupation was not assessed in this pilot.",
+      "footprint": null
+    }
+  ],
+  "claims": [
+    {
+      "id": "el-araj-roman",
+      "title": "Roman occupation at El-Araj",
+      "periodIds": ["first-century-ce"],
+      "siteIds": ["el-araj"],
+      "text": "The 2017 team reported 1st–3rd-century pottery, a Nero denarius dated 65–66 CE, and bathhouse remains. A Roman wall was recorded at −211.16 m relative to the report's sea-level reference.",
+      "evidenceType": "excavation report",
+      "sourceIds": ["el-araj-2017"],
+      "uncertainty": "The occupation range extends beyond the selected century. A wall elevation is not a water-level measurement; the report does not identify a geoid or survey benchmark."
+    },
+    {
+      "id": "et-tell-roman",
+      "title": "Roman occupation at Et-Tell",
+      "periodIds": ["first-century-ce"],
+      "siteIds": ["et-tell"],
+      "text": "The Et-Tell project reports Hellenistic and Roman remains and fishing equipment. It favors identifying this inland site with Bethsaida and proposes changes to the ancient shoreline.",
+      "evidenceType": "excavation project interpretation",
+      "sourceIds": ["et-tell-overview"],
+      "uncertainty": "The identification and shoreline explanation remain debated. No precise ancient shoreline geometry is imported from this account."
+    },
+    {
+      "id": "roman-water-level-disagreement",
+      "title": "Competing Roman lake-level interpretations",
+      "periodIds": ["first-century-ce"],
+      "siteIds": ["el-araj"],
+      "text": "Giaime and Artzy infer an early Roman highstand around −208 to −209 m MSL. The El-Araj team argues for lower water from remains below that range.",
+      "evidenceType": "comparison of published interpretations",
+      "sourceIds": ["giaime-artzy-2022", "el-araj-2017"],
+      "uncertainty": "Different sites, dates, assumptions and vertical references must be reconciled before either interpretation can define an ancient shoreline."
+    },
+    {
+      "id": "el-araj-deposition",
+      "title": "Sedimentation and later occupation",
+      "periodIds": ["byzantine"],
+      "siteIds": ["el-araj"],
+      "text": "The excavation team associates river-deposited mud and clay with an occupation gap around 250–350 CE and reports subsequent Byzantine settlement.",
+      "evidenceType": "excavation report and sediment interpretation",
+      "sourceIds": ["el-araj-2017"],
+      "uncertainty": "This local stratigraphic interpretation supplies neither a regional flood boundary nor a georeferenced former Jordan channel."
+    },
+    {
+      "id": "el-araj-church",
+      "title": "Byzantine church",
+      "periodIds": ["byzantine"],
+      "siteIds": ["el-araj"],
+      "text": "The 2019 expedition reported a Byzantine church with mosaic floors, marble chancel-screen material and gilded tesserae. Its proposed connection to Willibald's pilgrimage account is an interpretation.",
+      "evidenceType": "excavation report",
+      "sourceIds": ["el-araj-2019"],
+      "uncertainty": "A church and later pilgrimage tradition do not establish the location of an apostle's 1st-century house."
+    },
+    {
+      "id": "el-araj-earlier-compound",
+      "title": "Earlier walls beneath the church",
+      "periodIds": ["byzantine"],
+      "siteIds": ["el-araj"],
+      "text": "The 2024 team dated walls east of the church to the late 4th or early 5th century using pottery. It proposed an earlier sacred compound associated with the Peter tradition.",
+      "evidenceType": "excavation report with proposed interpretation",
+      "sourceIds": ["el-araj-2024"],
+      "uncertainty": "The report notes the absence of well-contextualized coins for this dating; the sacred-compound interpretation is a hypothesis."
+    },
+    {
+      "id": "byzantine-water-level",
+      "title": "A Byzantine water-level constraint at Kursi",
+      "periodIds": ["byzantine"],
+      "siteIds": [],
+      "text": "Giaime and Artzy use a fishpond's circulation surface at −213.84 m MSL as a maximum mean lake-level constraint during construction in the 5th–6th centuries.",
+      "evidenceType": "archaeological water-level inference",
+      "sourceIds": ["giaime-artzy-2022"],
+      "uncertainty": "An upper bound at a dated structure is neither a constant water surface for the entire Byzantine period nor a reconstructed coastline."
+    }
+  ],
+  "waterLevelAlternatives": [
+    {
+      "id": "early-roman-published-range",
+      "periodIds": ["first-century-ce"],
+      "label": "Early Roman highstand proposal",
+      "kind": "interval",
+      "minMslM": -209,
+      "maxMslM": -208,
+      "valueMslM": null,
+      "datum": "MSL as reported by Giaime and Artzy; no transformation to the selected terrain provider's vertical reference has been established.",
+      "sourceId": "giaime-artzy-2022",
+      "claimIds": ["roman-water-level-disagreement"],
+      "applicability": "Broad Late Hellenistic / Early Roman interpretation, challenged by evidence interpreted differently at El-Araj.",
+      "renderAsWaterSurface": false,
+      "allowIllustrativeHeightScreen": true,
+      "geometry": null
+    },
+    {
+      "id": "el-araj-roman-wall",
+      "periodIds": ["first-century-ce"],
+      "label": "El-Araj Roman wall elevation",
+      "kind": "find-elevation",
+      "minMslM": null,
+      "maxMslM": null,
+      "valueMslM": -211.16,
+      "datum": "211.16 metres below sea level in the excavation report; benchmark and geoid are unspecified.",
+      "sourceId": "el-araj-2017",
+      "claimIds": ["el-araj-roman", "roman-water-level-disagreement"],
+      "applicability": "An archaeological find elevation. It must not be offered as a lake-level preset.",
+      "renderAsWaterSurface": false,
+      "allowIllustrativeHeightScreen": false,
+      "geometry": null
+    },
+    {
+      "id": "byzantine-kursi-upper-bound",
+      "periodIds": ["byzantine"],
+      "label": "Kursi construction-time upper bound",
+      "kind": "upper-bound",
+      "minMslM": null,
+      "maxMslM": -213.84,
+      "valueMslM": null,
+      "datum": "MSL as reported from differential GPS measurements; compatibility with the current DEM and Cesium ellipsoidal heights has not been established.",
+      "sourceId": "giaime-artzy-2022",
+      "claimIds": ["byzantine-water-level"],
+      "applicability": "Maximum mean level inferred for a 5th–6th-century construction context at Kursi, not a dated full-lake shoreline.",
+      "renderAsWaterSurface": false,
+      "allowIllustrativeHeightScreen": true,
+      "geometry": null
+    }
+  ],
+  "sources": [
+    {
+      "id": "openbible",
+      "title": "OpenBible.info Bible Geocoding Data",
+      "url": "https://github.com/openbibleinfo/Bible-Geocoding-Data/tree/7eb18a5ee62f27b9b93bd6689ea272d76dd23b8f",
+      "author": "OpenBible.info",
+      "license": "CC BY 4.0; separately attributed OpenStreetMap coordinates retain ODbL terms",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "use": "Modern candidate reference coordinates and place identifiers; no ancient surface geometry.",
+      "localProvenancePath": "/data/geography/index.json"
+    },
+    {
+      "id": "el-araj-2017",
+      "title": "El Araj Excavation Project — Season 2 (2017)",
+      "url": "https://www.bethsaida-julias.com/season2report",
+      "author": "El Araj Excavation Project",
+      "year": 2017,
+      "license": "No open reuse license verified",
+      "use": "Source link, short original factual paraphrase and reported numerical elevation; no article body or images imported."
+    },
+    {
+      "id": "et-tell-overview",
+      "title": "Bethsaida Excavations — Overview",
+      "url": "https://bethsaidaarchaeology.org/2017/01/05/bethsaida-overview/",
+      "author": "Bethsaida Excavations Project",
+      "year": 2017,
+      "license": "No open reuse license verified",
+      "use": "Source link and short original factual paraphrase; no article body or figures imported."
+    },
+    {
+      "id": "el-araj-2019",
+      "title": "El Araj Excavation Project — Season 4 (2019)",
+      "url": "https://www.bethsaida-julias.com/season4report",
+      "author": "El Araj Excavation Project",
+      "year": 2019,
+      "license": "No open reuse license verified",
+      "use": "Source link and short original factual paraphrase; no article body or plans imported."
+    },
+    {
+      "id": "el-araj-2024",
+      "title": "El Araj Excavation Project — Season 8 (2024)",
+      "url": "https://www.bethsaida-julias.com/season8report",
+      "author": "El Araj Excavation Project",
+      "year": 2024,
+      "license": "No open reuse license verified",
+      "use": "Source link and short original factual paraphrase; no article body or plans imported."
+    },
+    {
+      "id": "giaime-artzy-2022",
+      "title": "Using archaeological data for the understanding of Late-Holocene Sea of Galilee’s level fluctuations",
+      "url": "https://doi.org/10.1038/s41598-022-09768-8",
+      "author": "Matthieu Giaime and Michal Artzy",
+      "year": 2022,
+      "publication": "Scientific Reports 12, 9775",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "use": "Selected numerical constraints and original summary, simplified from the article; no figures or third-party images imported."
+    },
+    {
+      "id": "baker-2000",
+      "title": "Sedimentologic and paleogeomorphologic character of the western Beteiha Plain, Israel",
+      "url": "https://digitalcommons.unomaha.edu/studentwork/3393/",
+      "author": "Laura Baker",
+      "year": 2000,
+      "license": "Copyright retained; no open reuse license verified",
+      "use": "Bibliographic lead for a GIS-based paleogeomorphological study; no thesis text, figures or GIS geometry imported."
+    }
+  ],
+  "shoreline": {
+    "geometry": null,
+    "status": "not-indexed",
+    "reason": "No openly reusable, georeferenced epoch-specific shoreline geometry was located in the reviewed sources. This is a scoped research result, not a claim that no such data exists."
+  },
+  "riverCourses": {
+    "geometry": null,
+    "status": "not-indexed",
+    "reason": "Local sediment evidence is insufficient to draw a precise former Jordan channel."
+  },
+  "ancientTerrain": {
+    "geometry": null,
+    "status": "not-indexed",
+    "reason": "Modern topography does not recover buried surfaces, past delta sedimentation, tectonic displacement or lake bathymetry."
+  },
+  "renderingRules": [
+    "Show candidate identifications and report authors explicitly; do not silently select a single Bethsaida location.",
+    "Date filters select evidence relevant to a viewing interval; they do not establish continuous occupation or the absence of unindexed evidence.",
+    "Preserve the distinction between find elevations, inferred water-level intervals and upper bounds.",
+    "Any modern DEM height screen is an uncalibrated illustration unless vertical references are harmonized. It is not a historical waterline or a hydraulic inundation model.",
+    "Do not use find elevations as water-level presets.",
+    "Do not generate ancient coastline polygons, river paths, excavation footprints, buildings or numerical uncertainty radii from these reference points.",
+    "Retain source credits and direct links when displaying these claims."
+  ]
+}

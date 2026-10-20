@@ -1,0 +1,9 @@
+{
+  "id": "scripture-qwen3-0.6b-v2",
+  "format": "MLC q4f16_1",
+  "url": "https://github.com/TJKoury/bible/releases/download/scripture-model-v2/scripture-qwen3-0.6b-v2-mlc-q4f16_1.tar.gz",
+  "directory": "scripture-qwen3-0.6b-v2",
+  "bytes": 293764255,
+  "sha256": "9e20aa9c63362652aedb6b3fa6370d78d797b4293f8df5e0f39fa61c4f8c918d",
+  "unpackedBytes": 347145485
+}

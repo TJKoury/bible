@@ -1,8 +1,9 @@
 export const models = [
-  { id:'Qwen3-8B-q4f16_1-MLC', title:'Qwen3 · 8B', detail:'About 4.7 GB download · 6+ GB GPU memory', size:'4.7 GB' },
-  { id:'Qwen3-4B-q4f16_1-MLC', title:'Qwen3 · 4B', detail:'About 2.4 GB download · 3.5+ GB GPU memory', size:'2.4 GB' },
-  { id:'Qwen3-1.7B-q4f16_1-MLC', title:'Qwen3 · 1.7B', detail:'About 1.1 GB download · 2+ GB GPU memory', size:'1.1 GB' },
-  { id:'Qwen3-0.6B-q4f16_1-MLC', title:'Qwen3 · 0.6B', detail:'About 400 MB download · 1.5+ GB GPU memory · limited reasoning', size:'400 MB' },
+  { id:'scripture-qwen3-0.6b-v2', title:'Scripture · 0.6B · experimental', detail:'About 347 MB download · 1.5+ GB GPU memory · custom historical-text training', size:'347 MB',downloadGB:0.347,memoryGB:1.5,custom:true,baseId:'Qwen3-0.6B-q4f16_1-MLC',path:'models/scripture-qwen3-0.6b-v2/resolve/v2/' },
+  { id:'Qwen3-0.6B-q4f16_1-MLC', title:'Qwen3 · 0.6B', detail:'About 400 MB download · 1.5+ GB GPU memory · limited reasoning', size:'400 MB',downloadGB:0.4,memoryGB:1.5 },
+  { id:'Qwen3-1.7B-q4f16_1-MLC', title:'Qwen3 · 1.7B', detail:'About 1.1 GB download · 2+ GB GPU memory', size:'1.1 GB',downloadGB:1.1,memoryGB:2 },
+  { id:'Qwen3-4B-q4f16_1-MLC', title:'Qwen3 · 4B', detail:'About 2.4 GB download · 3.5+ GB GPU memory', size:'2.4 GB',downloadGB:2.4,memoryGB:3.5 },
+  { id:'Qwen3-8B-q4f16_1-MLC', title:'Qwen3 · 8B', detail:'About 4.7 GB download · 6+ GB GPU memory', size:'4.7 GB',downloadGB:4.7,memoryGB:6 },
 ];
 export const researchInstructions = `You are an interfaith research assistant working from a supplied evidence packet.
 Compare Christian traditions, Judaism and Islam without endorsing or privileging any one tradition. Never flatten their differences or suggest one author represents every member of a religion.

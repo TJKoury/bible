@@ -1,28 +1,33 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onMount, untrack } from 'svelte';
   import Icon from './Icon.svelte';
   import MapView from './MapView.svelte';
   import { json } from './data.js';
   import { articleList, linkedArticles, passagePlaces, mapPoints } from './geography.js';
-  let { selectedId = '', book, chapter, verse, text, aligned, theme, onSelect, onMap, onResearch } = $props();
+  let { selectedId = '', book, chapter, verse, text, aligned, theme, contextLabel, onSelect, onMap, onResearch } = $props();
   let index = $state(null);
   let geography = $state(null);
   let article = $state(null);
   let query = $state('');
-  let category = $state('all');
+  let category = $state('passage');
   let section = $state('overview');
   let error = $state('');
   let loading = $state(false);
   let mapMode = $state('2d');
-  let loadId = 0;
+  let loadId = 0, lastContext = '';
+  $effect(() => { const next=`${book}.${chapter}.${verse}`;if(next!==lastContext)untrack(()=>{lastContext=next;query='';category='passage';}); });
   const sections = [['overview','Overview'],['archaeology','Archaeology'],['maps','Maps'],['artifacts','Artifacts'],['literature','Other literature'],['references','References']];
   const articles = $derived(articleList(index));
   const contextPlaces = $derived(aligned ? passagePlaces(geography, book, chapter, verse, 'chapter') : []);
+  const verseArticles = $derived(new Set([
+    ...(aligned ? passagePlaces(geography,book,chapter,verse,'verse') : []).map(p=>p.articleId).filter(Boolean),
+    ...linkedArticles(index,text || '').map(a=>a.id),
+  ]));
   const inPassage = $derived(new Set([...contextPlaces.map(p => p.articleId).filter(Boolean), ...linkedArticles(index, text || '').map(a => a.id)]));
   const matches = $derived(articles.filter(a =>
     (category !== 'passage' || inPassage.has(a.id)) &&
     `${a.title} ${(a.aliases || []).join(' ')}`.toLowerCase().includes(query.toLowerCase())
-  ).sort((a, b) => a.title.localeCompare(b.title)));
+  ).sort((a, b) => Number(verseArticles.has(b.id))-Number(verseArticles.has(a.id)) || a.title.localeCompare(b.title)));
   const relatedPlaces = $derived(Object.values(geography?.places || {}).filter(p => p.articleId === article?.id || (article?.relatedPlaces || []).includes(p.id)));
   const points = $derived(mapPoints(relatedPlaces));
   const displayedSections = $derived((article?.sections || []).filter(s => section === 'overview' ? ['overview','history','other','geography','biography','religion','context'].includes(s.category) || !s.category : s.category === section));
@@ -33,6 +38,7 @@
     catch { error = 'The encyclopedia index could not load. Please retry.'; }
   }
   $effect(() => { if (selectedId) loadArticle(selectedId); else { ++loadId; article = null; } });
+  $effect(() => { if(!selectedId && index && geography && matches.length)onSelect(matches[0].id); });
   async function loadArticle(id) {
     const ticket = ++loadId;
     loading = true; error = ''; article = null; section = 'overview';
@@ -46,10 +52,10 @@
 </script>
 
 <section class="explore-view encyclopedia-view">
-  <div class="explore-heading"><div><p class="eyebrow">HISTORY, LANGUAGE & THE WORLD OF THE TEXT</p><h1>A study beyond the margins.</h1><p>Follow a name into its history. Keep the evidence in view.</p></div><span class="outline-badge"><Icon name="compass" />Study encyclopedia</span></div>
+  <div class="explore-heading"><h1>Study encyclopedia</h1></div>
   <div class="encyclopedia-layout">
     <aside class="encyclopedia-directory" aria-label="Encyclopedia articles">
-      <label class="field-search"><Icon name="search" /><input aria-label="Find encyclopedia article" bind:value={query} placeholder="Bethsaida, Moses, covenant…" /></label>
+      <label class="field-search"><Icon name="search" /><input aria-label="Find encyclopedia article" bind:value={query} placeholder="Find a person, place, or subject" /></label>
       <div class="segmented" role="group" aria-label="Article scope"><button class:active={category === 'all'} aria-pressed={category === 'all'} onclick={() => category = 'all'}>All articles</button><button class:active={category === 'passage'} aria-pressed={category === 'passage'} onclick={() => category = 'passage'}>This passage</button></div>
       <p class="source-caption">{matches.length.toLocaleString()} articles {query ? 'matching your search' : 'in this collection'}</p>
       <div class="article-list">{#each matches.slice(0, 120) as item}<button class:active={selectedId === item.id} onclick={() => onSelect(item.id)}><strong>{item.title}</strong><small>{item.kind || item.category || 'Encyclopedia'}</small><Icon name="chevron-right" /></button>{/each}</div>
@@ -65,7 +71,7 @@
         {#if article.summary}<p class="article-lead">{article.summary}</p>{/if}
         <div class="article-tabs" role="group" aria-label="Study article sections">{#each sections as [id, title]}<button class:active={section === id} aria-pressed={section === id} onclick={() => section = id}>{title}</button>{/each}</div>
         {#if section === 'maps'}
-          {#if points.length}<div class="inline-actions"><div class="segmented"><button class:active={mapMode === '2d'} onclick={() => mapMode = '2d'}>2D map</button><button class:active={mapMode === '3d'} onclick={() => mapMode = '3d'}>3D terrain</button></div><button class="subtle-button" onclick={onMap}>Open passage atlas <Icon name="arrow-right" /></button></div><MapView {points} mode={mapMode} {theme} />
+          {#if points.length}<div class="inline-actions"><div class="segmented"><button class:active={mapMode === '2d'} onclick={() => mapMode = '2d'}>2D map</button><button class:active={mapMode === '3d'} onclick={() => mapMode = '3d'}>Cesium 3D</button></div><button class="subtle-button" onclick={onMap}>Open passage atlas <Icon name="arrow-right" /></button></div><MapView {points} mode={mapMode} {theme} />
             <p class="source-caption">Candidate identifications from OpenBible.info, CC BY 4.0. Modern landscape; alternative locations are not a reconstructed journey.</p>
             {#each relatedPlaces as place}<div class="article-section"><h3>{place.name}</h3>{#each place.candidates || [] as c}<p><strong>{c.name}</strong>{#if Number.isFinite(c.lat)} · {c.lat.toFixed(4)}°, {c.lon.toFixed(4)}°{/if}{#if c.description}<br>{c.description}{/if}</p>{/each}<a href={place.url} target="_blank" rel="noreferrer">Identification evidence ↗</a></div>{/each}
           {:else}<p class="empty-note">No geographical identification is linked to this article. People and ideas may not have a single meaningful map location.</p>{/if}
@@ -81,7 +87,7 @@
         {/if}
         <div class="article-footer"><button class="subtle-button" onclick={() => onResearch(`What is known about ${article.title}, and which identifications or interpretations are disputed?`)}><Icon name="spark" />Research this topic</button><p>Adapted and abridged from Wikipedia contributors. <a href={article.historyUrl} target="_blank" rel="noreferrer">Attribution history</a> · <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noreferrer">CC BY-SA 4.0</a>. Separately labeled study notes: CC BY 4.0. Section grouping is editorial; source claims have not all been independently verified. {#if article.truncated || article.abridged}This article is abridged; consult the source for omitted material.{/if}</p></div>
       {:else}
-        <div class="encyclopedia-welcome"><span class="large-symbol">✦</span><h2>Every name opens a door.</h2><p>Choose a person, place, or subject to explore its history, archaeology, artifacts, maps, and references in other literature.</p><div class="suggested-topics">{#each ['Bethsaida','Jerusalem','Moses','Abraham'] as title}{@const item = articles.find(a => a.title === title)}{#if item}<button onclick={() => onSelect(item.id)}>{title}<Icon name="arrow-up-right" /></button>{/if}{/each}</div><p class="source-caption">A growing, attributed collection—not an exhaustive scholarly encyclopedia. Coverage and missing sections are shown explicitly.</p></div>
+        <div class="encyclopedia-welcome"><h2>Articles for {contextLabel}</h2><p>No article is linked to the selected passage in this collection. Search all articles to explore a person, place, or subject.</p><button class="subtle-button" onclick={() => category = 'all'}>Browse all articles<Icon name="arrow-right" /></button></div>
       {/if}
     </div>
   </div>

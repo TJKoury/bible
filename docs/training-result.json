@@ -1,0 +1,210 @@
+{
+  "id": "scripture-qwen3-0.6b-v2",
+  "status": "experimental",
+  "customWeights": true,
+  "format": "MLX affine 4-bit and MLC q4f16_1",
+  "browserVerified": true,
+  "approvedForTheologicalAnswers": false,
+  "base": {
+    "id": "mlx-community/Qwen3-0.6B-4bit",
+    "revision": "73e3e38d981303bc594367cd910ea6eb48349da8",
+    "license": "Apache-2.0",
+    "bytes": 351395834
+  },
+  "baseWeightsSha256": "392e8d466d56100ada00eb82031fb854297fc9e389b7d303eba3af114e87bce2",
+  "training": {
+    "iterations": 150,
+    "batchSize": 4,
+    "maxSequenceLength": 1024,
+    "learningRate": 2e-06,
+    "loraRank": 8,
+    "loraScale": 16.0,
+    "layers": 8,
+    "seed": 17,
+    "quantizationBits": 4,
+    "quantizationGroupSize": 64,
+    "trainableParameters": 1441792,
+    "seconds": 93.143,
+    "objective": "Continued-text QLoRA adaptation, not supervised theological Q&A"
+  },
+  "data": {
+    "sources": 13,
+    "religions": [
+      "Christianity",
+      "Judaism",
+      "Islam"
+    ],
+    "trainPassages": 1551,
+    "validationPassages": 198,
+    "testPassages": 177,
+    "equalPassagesPerReligion": true,
+    "splitUnit": "source edition",
+    "licenseScope": "Historical public-domain-in-the-USA texts; source rights and credits retained.",
+    "encyclopediaIncluded": false,
+    "sourceManifestSha256": "87c47abfcb6fd83d9a9c4d46a6ebc309c50d0f16996eb935a6317cce0fee60d3",
+    "corpusSha256": "dd2ce4173b8fb9d64cdf922ac445770b0b43e1b23cb82be020ae65ff97143170"
+  },
+  "heldoutMetrics": {
+    "base": {
+      "loss": 3.776,
+      "perplexity": 43.657
+    },
+    "adapter": {
+      "loss": 3.58,
+      "perplexity": 35.868
+    },
+    "mergedBf16": {
+      "loss": 3.58,
+      "perplexity": 35.865
+    },
+    "requantizedMlx4bit": {
+      "loss": 3.764,
+      "perplexity": 43.113
+    },
+    "mlcBrowser": null
+  },
+  "probeReview": [
+    "Conservative adapter preserves named Romans 9 disagreement and distinguishes a survey from endorsement.",
+    "It declines an unsupported excavation quotation.",
+    "It still makes passage-summary errors, omits requested source IDs, and overstates limits to interfaith comparison.",
+    "Seven ad hoc qualitative probes are not an expert-reviewed theological benchmark."
+  ],
+  "limitations": [
+    "Do not present adapter-only loss improvement as a browser-model result; requantization loses most of the observed gain.",
+    "Test/probe results were inspected during development; a new withheld acceptance benchmark is needed.",
+    "Historical English source coverage is incomplete and unequal within each religion.",
+    "Long text is truncated at 1024 tokens; final test includes all177 records at batch size1.",
+    "A pretrained model can contain prior exposure to these public-domain sources.",
+    "Custom training does not establish citation reliability, religious neutrality or theological expertise."
+  ],
+  "firstExperiment": {
+    "status": "rejected",
+    "iterations": 200,
+    "loss": 4.585,
+    "perplexity": 97.989,
+    "reason": "Held-out degradation and repetitive, ungrounded answers."
+  },
+  "licenses": {
+    "baseAndModel": "Apache-2.0; original license and modifications notice retained.",
+    "corpus": "See DATA-RIGHTS.json and CORPUS-NOTICES.txt."
+  },
+  "heldoutSourceMetrics": [
+    {
+      "religion": "Christianity",
+      "variant": "base",
+      "records": 59,
+      "sourceIds": [
+        "augustine-confessions"
+      ],
+      "loss": 4.126,
+      "perplexity": 61.947
+    },
+    {
+      "religion": "Christianity",
+      "variant": "adapter",
+      "records": 59,
+      "sourceIds": [
+        "augustine-confessions"
+      ],
+      "loss": 3.922,
+      "perplexity": 50.509
+    },
+    {
+      "religion": "Christianity",
+      "variant": "requantized",
+      "records": 59,
+      "sourceIds": [
+        "augustine-confessions"
+      ],
+      "loss": 4.114,
+      "perplexity": 61.193
+    },
+    {
+      "religion": "Judaism",
+      "variant": "base",
+      "records": 59,
+      "sourceIds": [
+        "maimonides-guide"
+      ],
+      "loss": 3.447,
+      "perplexity": 31.398
+    },
+    {
+      "religion": "Judaism",
+      "variant": "adapter",
+      "records": 59,
+      "sourceIds": [
+        "maimonides-guide"
+      ],
+      "loss": 3.267,
+      "perplexity": 26.236
+    },
+    {
+      "religion": "Judaism",
+      "variant": "requantized",
+      "records": 59,
+      "sourceIds": [
+        "maimonides-guide"
+      ],
+      "loss": 3.432,
+      "perplexity": 30.929
+    },
+    {
+      "religion": "Islam",
+      "variant": "base",
+      "records": 59,
+      "sourceIds": [
+        "ghazali-confessions"
+      ],
+      "loss": 3.76,
+      "perplexity": 42.97
+    },
+    {
+      "religion": "Islam",
+      "variant": "adapter",
+      "records": 59,
+      "sourceIds": [
+        "ghazali-confessions"
+      ],
+      "loss": 3.552,
+      "perplexity": 34.867
+    },
+    {
+      "religion": "Islam",
+      "variant": "requantized",
+      "records": 59,
+      "sourceIds": [
+        "ghazali-confessions"
+      ],
+      "loss": 3.751,
+      "perplexity": 42.56
+    }
+  ],
+  "packageFilesBytes": 347015126,
+  "archive": {
+    "name": "scripture-qwen3-0.6b-v2-mlx4bit.tar.gz",
+    "bytes": 306145252,
+    "sha256": "18148137367ae06791ebe2d536e60a6deb23ac3f7fe139ef2d6a3ca2211cdaac"
+  },
+  "browserValidation": {
+    "runtime": "WebLLM 0.2.86 / Chrome WebGPU",
+    "checks": [
+      "Loaded custom MLC weights",
+      "Generated a coherent Genesis 2:1 passage summary with [S1] citation"
+    ],
+    "limitations": [
+      "Summary omitted part of the passage and did not follow the two-sentence format exactly.",
+      "One runtime smoke test is not a theological accuracy benchmark."
+    ],
+    "perplexity": null
+  },
+  "mlcArchive": {
+    "id": "scripture-qwen3-0.6b-v2",
+    "format": "MLC q4f16_1",
+    "url": "https://github.com/TJKoury/bible/releases/download/scripture-model-v2/scripture-qwen3-0.6b-v2-mlc-q4f16_1.tar.gz",
+    "directory": "scripture-qwen3-0.6b-v2",
+    "bytes": 293764255,
+    "sha256": "9e20aa9c63362652aedb6b3fa6370d78d797b4293f8df5e0f39fa61c4f8c918d",
+    "unpackedBytes": 347145485
+  }
+}

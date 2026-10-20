@@ -1,10 +1,14 @@
 const cache = new Map();
+export function assetUrl(path) {
+  if (/^https?:\/\//.test(path)) return path;
+  return `${import.meta.env?.BASE_URL || '/'}${path.replace(/^\//,'')}`;
+}
 
 export function json(path) {
   if (!cache.has(path)) {
     cache.set(
       path,
-      fetch(path)
+      fetch(assetUrl(path))
         .then((response) => {
           if (!response.ok)
             throw new Error(`Could not load ${path} (${response.status}).`);

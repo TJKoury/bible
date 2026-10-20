@@ -44,12 +44,14 @@ npm run build
   artifacts, maps, literature, and references. Bethsaida has sourced study notes
   comparing the et-Tell and el-Araj excavation projects.
 - 1,342 biblical places with 4,370 candidate identifications, linked to 5,616 verses
-  across 860 chapters. MapLibre renders 2D maps and actual 3D elevation, preserving
+  across 860 chapters. MapLibre renders 2D maps; CesiumJS renders 3D terrain, preserving
   uncertain and alternative locations. Empty passages remain empty.
 - Local passage retrieval across 13 theological works (4,465 passages, about 1.45
   million words), BSB, and encyclopedia summaries; relevant encyclopedia sections
   load on demand. Faith labels identify sources without choosing a preferred faith.
-- Optional Qwen3 8B, 4B, 1.7B, or 0.6B inference on WebGPU. Download progress,
+- The current reading book/chapter/verse anchors research, geography, and encyclopedia
+  selection. Research packets remain associated with their passage during navigation.
+- Device-checked Qwen3 0.6B, 1.7B, 4B, or 8B inference on WebGPU. Download progress,
   cancellation, unload, cache removal, streaming answers, source selection, citation
   links, and Markdown/copy exports are included. No hosted model API receives questions.
 - A source-linked Romans 9 comparison keeps Schreiner, Abasciano, and Hagopian
@@ -83,18 +85,24 @@ The separate encyclopedia export contains 4,456 retained sections (591,270 words
 with article-separated splits, revision links, attribution, and CC BY-SA notices.
 It excludes generated notes and the bodies of papers linked from Wikipedia.
 
-**No custom theological model has been trained or deployed.** The app currently
-uses a pretrained model with retrieved evidence. Raw historical texts are not a
-reviewed question/answer dataset. An experiment on those texts would be domain
-adaptation, not proof of accurate theology or reliable citation. Quality evaluation
-needs held-out questions and attribution checks across the represented traditions,
-including distinctions between an author's argument, an objection, and a survey.
+A custom Qwen3 0.6B model has now been trained locally. The conservative second
+experiment uses 150 QLoRA steps on equal counts of Christianity, Judaism, and Islam
+historical-text passages, with document-separated held-out evaluation. The adapter
+reduced loss from 3.776 to 3.580 (perplexity 43.657 → 35.868); this is before final
+requantization, which lost most of the gain in the MLX 4-bit export. That package is
+346,979,810 bytes. The first run worsened evaluation and is not promoted.
+This is experimental domain adaptation: answer probes still reveal attribution
+mistakes. Better text prediction does not establish theological accuracy or
+neutrality. See [the training report](docs/training-small-model.md) for settings, probes, and deployment status.
+Wikipedia is exported separately with CC BY-SA attribution and was not part of this run.
 
 Load a model from **Research desk → Load local model**. A secure context (localhost
 or HTTPS), WebGPU, and `shader-f16` support are required. Qwen3 8B needs roughly a
 4.7 GB initial weight download and 6+ GB of available GPU memory; 4B downloads
 about 2.4 GB. Smaller
-models use less memory but have weaker reasoning. Models are downloaded from
+models use less memory but have weaker reasoning. The default Scripture 0.6B option
+is the experimental custom MLC export (about 347 MB), verified to load and
+generate in Chrome WebGPU. Its final answer quality is not validated. Models are downloaded from this site or
 Hugging Face and a WebGPU runtime from MLC's GitHub repository; browser caching is
 best-effort. Sources can still be searched and exported without a model.
 
@@ -107,7 +115,12 @@ produce irrelevant matches. Users can inspect and change the evidence packet.
 Map tiles load online from OpenStreetMap and elevation from Mapterhorn; no tiles
 are bulk downloaded. Set `VITE_MAP_TILES` to a compatible raster endpoint to use
 another provider, and update attribution for that provider. Maps show modern
-terrain/shorelines with 1.4× elevation in 3D, not an ancient reconstruction.
+terrain at native scale. The reconstruction lab hides modern map labels and shows
+dated evidence by period where available. Its registry covers every atlas place;
+only four linked place records currently have a dated evidence study, and no ancient
+shoreline, river, or building geometry has been imported. The Galilee elevation
+screening is an uncalibrated experiment on modern terrain, not an ancient water map.
+See [landscape evidence and vertical datum limits](docs/ancient-landscape-evidence.md).
 Regions may be represented by a reference point. OpenBible source rankings are
 historical aggregates, not current probabilities.
 
@@ -185,3 +198,27 @@ targets, download metadata, archive integrity, and counts.
 `Research.svelte` and two dedicated workers isolate retrieval and model inference
 from the reading UI. `retrieval.js` handles ranking, source diversity and citation
 identifier checks; `ai.js` defines the comparative research prompt.
+
+## GitHub Pages
+
+`.github/workflows/pages.yml` validates and builds the app on pushes to `main`, then
+publishes `dist/` with GitHub Pages. `BASE_PATH` comes from the Pages configuration,
+so data files, downloads, workers, and Cesium assets work beneath the project URL.
+To reproduce the build locally: `BASE_PATH=/bible/ npm run build`.
+
+The local dev server exposes hardware information only at its development endpoint
+for model compatibility checks. The static site uses browser WebGPU limits and
+privacy-capped memory/cache estimates; it contains no hardcoded host profile.
+
+The trained model releases are separate from Git history. `model-release.json`
+pins the browser archive's size and SHA-256; `scripts/install_browser_model.py`
+checks and installs it into `dist/` after building. For a local packaged preview:
+
+```sh
+BASE_PATH=/bible/ npm run build
+python3 scripts/install_browser_model.py
+BASE_PATH=/bible/ npm run preview -- --port 4174
+```
+
+The training pipeline and final model limitations are documented in
+[docs/training-small-model.md](docs/training-small-model.md).
