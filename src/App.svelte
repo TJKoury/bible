@@ -349,10 +349,10 @@
           <p class="eyebrow">MANY TRANSLATIONS. ONE PLACE TO EXPLORE.</p><h1>A library for deeper reading.</h1>
           <p class="collection-lead">Familiar words. Fresh perspectives. Read, compare, and download the source editions in this library, with their provenance always close at hand.</p>
           <div class="library-stats"><div class="library-stat"><strong>{catalog.translations.length}</strong><span>English editions downloaded</span></div><div class="library-stat"><strong>2</strong><span>Original-language datasets</span></div><div class="library-stat"><strong>{Math.round(catalog.crossReferences / 1000)}k</strong><span>Verse cross-references</span></div></div>
-          <div class="section-label">YOUR TRANSLATIONS<span>FULL SOURCE DOWNLOADS · JSON</span></div>
+          <div class="section-label">YOUR TRANSLATIONS<span>JSON DOWNLOADS · ZIP ARCHIVES</span></div>
           <div class="library-table">
             {#each catalog.translations as item}
-              <div class="library-row"><span class="edition-monogram">{shortName(item.id)}</span><div class="edition-description"><h3>{item.title}</h3><p>{item.subtitle} · {item.books.length} books · {item.verses.toLocaleString()} verses<br>{item.license}{#if item.sourceGaps?.length} · {item.sourceGaps.length} source gaps noted in text{/if}</p></div><span class="installed"><Icon name="check" />Downloaded</span><button class="subtle-button" onclick={() => changeTranslation(item.id)}>Read<Icon name="arrow-right" /></button><a class="subtle-button" href={`/data/downloads/${item.id}.json`} download={`${item.id}.json`} aria-label={`Download ${item.title}`}><Icon name="download" />JSON</a></div>
+              <div class="library-row"><span class="edition-monogram">{shortName(item.id)}</span><div class="edition-description"><h3>{item.title}</h3><p>{item.subtitle} · {item.books.length} books · {item.verses.toLocaleString()} verses<br>{item.license}{#if item.sourceGaps?.length} · {item.sourceGaps.length} source gaps noted in text{/if}</p></div><span class="installed"><Icon name="check" />Downloaded</span><button class="subtle-button" onclick={() => changeTranslation(item.id)}>Read<Icon name="arrow-right" /></button><a class="subtle-button" href={`/data/downloads/${item.id}.zip`} download={`${item.id}.zip`} aria-label={`Download ${item.title}`}><Icon name="download" />ZIP</a></div>
             {/each}
           </div>
           <h2 class="collection-section-title">Closer to the original.</h2>
@@ -363,7 +363,7 @@
           <h2 class="collection-section-title">Other major translations</h2>
           <p class="collection-lead">These editions are not installed. Full-text storage and redistribution require a suitable publisher license or authorized service. The links below lead to publisher information; no copyrighted text has been downloaded for these entries.</p>
           <div class="publisher-list">{#each publishers as [id, url]}<a href={url} target="_blank" rel="noreferrer">{id} ↗<span>Publisher access</span></a>{/each}</div>
-          <p class="source-caption library-footnote">Downloaded editions are stored with this app. JSON and ZIP downloads save a copy to your device; they do not install an offline web app. <button class="text-button" onclick={() => sourcesDialog.showModal()}>View sources & attribution</button></p>
+          <p class="source-caption library-footnote">Downloaded editions are stored with this app. ZIP downloads contain JSON text and source metadata; they do not install an offline web app. <button class="text-button" onclick={() => sourcesDialog.showModal()}>View sources & attribution</button></p>
         </section>
       {:else}
         <section class="collection-view"><p class="eyebrow">WORDS TO RETURN TO</p><h1>Your saved passages.</h1><p class="collection-lead">A quiet place for the verses you want to revisit. Saved in this browser on this device.</p>

@@ -130,8 +130,13 @@ def save_edition(code, title, subtitle, license_name, books, source_url, native=
     payload = {"id": code, "title": title, "subtitle": subtitle, "license": license_name,
                "source": source_url, "books": metadata, "verses": count, "numbering": native,
                "sourceGaps": empty}
-    write_json(OUT / "downloads" / f"{code}.json", {
-        "edition": payload, "attribution": source_url, "license": license_name, "books": books})
+    download_path = OUT / "downloads" / f"{code}.zip"
+    download_path.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(download_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+        archive.writestr(f"{code}.json", json.dumps({
+            "edition": payload, "attribution": source_url, "license": license_name, "books": books
+        }, ensure_ascii=False, separators=(",", ":")) + "\n")
+    (OUT / "downloads" / f"{code}.json").unlink(missing_ok=True)
     print(f"{code}: {len(books)} books, {count:,} verses", flush=True)
     return payload
 
@@ -370,6 +375,7 @@ def main():
         if directory.name not in expected:
             shutil.rmtree(directory)
             (OUT / "downloads" / f"{directory.name}.json").unlink(missing_ok=True)
+            (OUT / "downloads" / f"{directory.name}.zip").unlink(missing_ok=True)
         else:
             for path in directory.glob("*.json"):
                 if path.stem not in expected[directory.name]:

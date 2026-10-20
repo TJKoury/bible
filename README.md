@@ -27,7 +27,7 @@ npm run build
 - Book, chapter, and verse navigation with URL history and the last reading position.
 - 14 downloaded English editions: BSB, WEB, KJV, ASV, BBE, Darby, YLT, DRC, Webster,
   JPS 1917, Rotherham, Geneva 1599, NHEB, and CPDV.
-- Whole-source JSON downloads. DRC and CPDV include 73 books; JPS contains the Tanakh.
+- Whole-source JSON downloads in ZIP archives. DRC and CPDV include 73 books; JPS contains the Tanakh.
 - WLC Hebrew/Aramaic and SBLGNT Greek with MACULA lemmas, morphology, contextual
   glosses, and Strong’s identifiers. Hebrew tokens include morphemes and affixes.
 - Full-corpus lemma concordances, with English passage previews.

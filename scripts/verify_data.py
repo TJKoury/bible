@@ -34,9 +34,11 @@ def verify():
                         gaps.append(f"{bid}.{c}.{v}")
         assert total == edition["verses"], edition["id"]
         assert gaps == edition["sourceGaps"], edition["id"]
-        archive = read(DATA / "downloads" / f"{edition['id']}.json")
-        assert archive["edition"] == edition
-        assert len(archive["books"]) == len(edition["books"])
+        with zipfile.ZipFile(DATA / "downloads" / f"{edition['id']}.zip") as archive:
+            assert archive.testzip() is None
+            download = json.loads(archive.read(f"{edition['id']}.json"))
+            assert download["edition"] == edition
+            assert len(download["books"]) == len(edition["books"])
         texts += total
     original_lemmas = {}
     for book in (DATA / "original").iterdir():
