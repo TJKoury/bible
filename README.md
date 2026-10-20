@@ -1,231 +1,269 @@
 # Scripture
 
-A Svelte 5 Bible reader with translation comparison, original-language word study,
-lemma concordances, and verse cross-references. Vite serves the app; all scripture
-data is downloaded and served locally. No Bible API keys are required for the installed editions.
-It also includes an attributed study encyclopedia, passage-linked 2D/3D geography,
-and a local research desk comparing Christian traditions, Judaism, and Islam.
+A Bible reader and study workspace built with **Svelte 5**: compare translations,
+explore Hebrew and Greek, follow places through 2D and 3D maps, and research named
+sources across Christian traditions, Judaism, and Islam.
 
-## Run
+**[Open Scripture](https://tjkoury.com/bible/)** ·
+[Run locally](#run-locally) ·
+[Data and sources](#data-and-sources) ·
+[Local AI quality](docs/local-ai-quality.md) ·
+[Training documentation](docs/training-small-model.md)
 
-Requires Node 22.12+ (or a supported newer release) and Python 3.10+ for data tools.
+![Bible AI with a question timeline, source excerpts, and references](docs/images/bible-ai.jpg)
+
+## A workspace anchored to your reading
+
+The current book, chapter, and verse carry through the reader, verse study,
+geography, encyclopedia, and Bible AI. You can follow a reference without
+rebuilding your context, or ask an explicit research question about another passage.
+
+| Area | What you can do |
+| --- | --- |
+| **Reader** | Read 14 installed English editions; compare translations; search text and references; save passages; adjust text size; switch between light and dark themes. |
+| **Original languages** | Inspect WLC Hebrew/Aramaic and SBLGNT Greek with MACULA lemmas, morphology, contextual glosses, and Strong’s identifiers. Follow a lemma through the corpus. |
+| **Verse study** | Explore ranked cross-references, preserve verse ranges, and open linked people, places, and objects. Saved verses have a filled bookmark and a visible saved-passage count. |
+| **Geography** | Switch between MapLibre 2D and CesiumJS 3D, change imagery, and inspect alternative place identifications in expandable candidate lists. |
+| **Encyclopedia** | Read attributed Wikipedia material grouped into history, archaeology, artifacts, maps, other literature, and references where available. |
+| **Bible AI** | Type or dictate a question, inspect exact source extracts, and revisit previous questions through the session timeline. No tradition is designated the preferred interpretation. |
+
+### Bible AI
+
+Bible AI opens with an empty question field in a separate rounded input panel.
+Submitting a question retrieves evidence; suggested questions are not submitted
+automatically. The main conversation and references share the same width and
+scroll independently.
+A narrow timeline in the margin keeps each question’s reading context, sources,
+and result together for the current session.
+
+Optional voice dictation uses the browser's speech-recognition support to fill
+the question field. It starts only at your request after you enable dictation;
+review the transcription before submitting it yourself.
+Unsupported browsers retain typed input. [Speech-recognition support varies and
+may use a browser-provider service](https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition);
+dictation is separate from the local WebGPU model.
+
+The **Advanced** tab holds device checks, model downloads, cache controls, the
+source inventory, and training information. Search and source inspection work
+without downloading a model. Research notes can be copied or downloaded as Markdown.
+
+### Geography and landscape evidence
+
+![Cesium geography with satellite imagery and alternative place locations](docs/images/geography.jpg)
+
+One toolbar contains passage scope, the centered **2D / Cesium 3D** switch, and
+landscape and imagery controls. Available layers are:
+
+- **Streets** — OpenStreetMap.
+- **Topographic** — OpenTopoMap.
+- **Satellite · 2016** — the EOX Cloudless mosaic.
+- **Satellite + labels · 2016** — the same mosaic with EOX/MapServer labels.
+
+Imagery selection persists in the browser. Changing a layer preserves the selected
+place and camera; selecting a candidate highlights its location. Provider credits
+remain visible, and tiles load on demand. Satellite imagery is dated, not live.
+Modern elevation comes from Mapterhorn.
+
+The reconstruction lab records dated landscape evidence separately from modern
+terrain. Its registry covers all 1,342 atlas places, but currently only four place
+records link to a dated study, and **no ancient shoreline, river, or building
+geometry has been imported**. The Galilee elevation screening is an uncalibrated
+experiment on modern terrain. See [landscape evidence and limits](docs/ancient-landscape-evidence.md).
+
+## Run locally
+
+Use **Node.js 22.12+ or a supported newer release**. **Python 3.13** is recommended
+for data tools, the complete test suite, and model packaging; it matches CI.
+Model training has separate dependencies.
 
 ```sh
-npm install
+git clone https://github.com/TJKoury/bible.git
+cd bible
+npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:4173/. The dev server uses a strict port.
+Open **http://127.0.0.1:4173/**. Vite uses a strict port. The installed scripture
+and study data are included in the repository; no Bible API key is needed.
+Models download separately when requested.
 
 ```sh
-npm run check
-npm test
-npm run verify:data
-npm run build
+npm run check         # Svelte and TypeScript diagnostics
+npm test              # Python and Node tests
+npm run verify:data   # Scripture, concordance, and download integrity
+npm run verify:study  # Geography and encyclopedia integrity
+npm run build         # Production build in dist/
 ```
 
-## Features
-
-- Book, chapter, and verse navigation with URL history and the last reading position.
-- 14 downloaded English editions: BSB, WEB, KJV, ASV, BBE, Darby, YLT, DRC, Webster,
-  JPS 1917, Rotherham, Geneva 1599, NHEB, and CPDV.
-- Whole-source JSON downloads in ZIP archives. DRC and CPDV include 73 books; JPS contains the Tanakh.
-- WLC Hebrew/Aramaic and SBLGNT Greek with MACULA lemmas, morphology, contextual
-  glosses, and Strong’s identifiers. Hebrew tokens include morphemes and affixes.
-- Full-corpus lemma concordances, with English passage previews.
-- 344,799 ranked OpenBible cross-reference links, preserving verse ranges.
-- English-to-Hebrew verse mapping, including different Psalm-heading numbering.
-- Full-text search within the selected translation, reference search, translation
-  comparison, bookmarks, reading size, evening theme, and focus mode.
-- Small-screen layout with a dismissible verse-study panel.
-- A visible light/dark switch, with the choice saved in this browser.
-- 792 abridged Wikipedia articles about places, people, objects, and other subjects,
-  with source revisions, contributor history, and separately grouped archaeology,
-  artifacts, maps, literature, and references. Bethsaida has sourced study notes
-  comparing the et-Tell and el-Araj excavation projects.
-- 1,342 biblical places with 4,370 candidate identifications, linked to 5,616 verses
-  across 860 chapters. MapLibre renders 2D maps; CesiumJS renders 3D terrain, preserving
-  uncertain and alternative locations. Empty passages remain empty.
-- Local passage retrieval across 13 theological works (4,465 passages, about 1.45
-  million words), BSB, and encyclopedia summaries; relevant encyclopedia sections
-  load on demand. Faith labels identify sources without choosing a preferred faith.
-- The current reading book/chapter/verse anchors research, geography, and encyclopedia
-  selection. Research packets remain associated with their passage during navigation.
-- Device-checked Qwen3 0.6B, 1.7B, 4B, or 8B inference on WebGPU. Download progress,
-  cancellation, unload, cache removal, streaming answers, source selection, citation
-  links, and Markdown/copy exports are included. No hosted model API receives questions.
-- A source-linked Romans 9 comparison keeps Schreiner, Abasciano, and Hagopian
-  distinct and corrects endorsement/pagination overstatements in the example answer.
-
-## Study data and local AI
+For the same URL prefix as the public site:
 
 ```sh
-npm run data:geography       # reuse pinned source revisions and cache
-npm run data:research        # reuse locked historical texts
-npm run verify:study
-npm run training:prepare    # export equal passage counts per religion, source-disjoint splits
-npm run training:encyclopedia # separate attributed Wikipedia section export
-npm run training:plan       # validate data and write a dry-run plan; no model training
+BASE_PATH=/bible/ npm run build
+BASE_PATH=/bible/ npm run preview -- --port 4174
 ```
 
-`scripts/download_geography.py --refresh` deliberately refreshes Wikipedia revisions.
-The encyclopedia importer retains bibliographic pointers, not the full text of every
-paper referenced by Wikipedia. Text is abridged and section grouping is automatic.
-See `public/data/encyclopedia/index.json` for coverage, omitted disambiguation pages,
-and source attribution. Modern archaeological findings in the Bethsaida notes are
-attributed to the excavation teams, not presented as independently adjudicated facts.
+## Local AI
 
-Research text/source metadata and hashes are in `public/data/research/`.
-[Research data and training documentation](docs/research-data.md) describes each
-source, tradition, rights, gaps, the training split, and the complete MLX → MLC →
-WebGPU conversion path. `scripts/train_model.py --train` runs an explicit local
-LoRA experiment only after the documented dependencies and checksum-pinned base
-weights are installed. Its default dry run does not download weights or train.
-The separate encyclopedia export contains 4,456 retained sections (591,270 words),
-with article-separated splits, revision links, attribution, and CC BY-SA notices.
-It excludes generated notes and the bodies of papers linked from Wikipedia.
+The default browser model is **Qwen2.5 1.5B Instruct**, quantized for WebLLM:
+about **880 MB of model data**, plus runtime assets, with an estimated
+**2+ GB of GPU memory** required.
+Its model revision is pinned in [`src/lib/ai.js`](src/lib/ai.js). Download size
+and runtime memory are different; the app checks the device before offering a load.
 
-A custom Qwen3 0.6B model has now been trained locally. The conservative second
-experiment uses 150 QLoRA steps on equal counts of Christianity, Judaism, and Islam
-historical-text passages, with document-separated held-out evaluation. The adapter
-reduced loss from 3.776 to 3.580 (perplexity 43.657 → 35.868); this is before final
-requantization, which lost most of the gain in the MLX 4-bit export. That package is
-346,979,810 bytes. The first run worsened evaluation and is not promoted.
-This is experimental domain adaptation: answer probes still reveal attribution
-mistakes. Better text prediction does not establish theological accuracy or
-neutrality. See [the training report](docs/training-small-model.md) for settings, probes, and deployment status.
-Wikipedia is exported separately with CC BY-SA attribution and was not part of this run.
+Inference runs in a Web Worker on **WebGPU**. A secure context—HTTPS or
+localhost—and `shader-f16` support are required. Open **Bible AI → Advanced**
+to inspect compatibility and load, cancel, unload, or remove a cached model.
+Questions and selected evidence are not sent to a hosted model API. Model files,
+runtime assets, map tiles, and external source links still require network requests.
+Optional dictation follows the browser's speech-processing and microphone
+permissions, and may send audio to its recognition service.
 
-Load a model from **Research desk → Load local model**. A secure context (localhost
-or HTTPS), WebGPU, and `shader-f16` support are required. Qwen3 8B needs roughly a
-4.7 GB initial weight download and 6+ GB of available GPU memory; 4B downloads
-about 2.4 GB. Smaller
-models use less memory but have weaker reasoning. The default Scripture 0.6B option
-is the experimental custom MLC export (about 347 MB), verified to load and
-generate in Chrome WebGPU. Its final answer quality is not validated. Models are downloaded from this site or
-Hugging Face and a WebGPU runtime from MLC's GitHub repository; browser caching is
-best-effort. Sources can still be searched and exported without a model.
+### How answers stay tied to sources
 
-The app checks whether generated citation IDs exist in the selected evidence
-packet. It **does not automatically verify entailment or author endorsement**.
-Those checks remain visible review questions. Retrieval uses BM25 and source
-diversity rather than a semantic embedding model, so ambiguous vocabulary can
-produce irrelevant matches. Users can inspect and change the evidence packet.
+The model’s job is to select relevant source passages. It does not write
+free-form theological paraphrases for the answer:
 
-The Research desk keeps the conversation and references in separate scrolling
-panels, with a question timeline for revisiting earlier research in the current
-session. Each question retains its reading context, evidence selection, and
-answer. The Advanced tab contains device checks, model downloads, corpus details,
-and training information. Research retrieves sources and, when a local model is
-loaded, drafts a cited comparison in the same action.
+1. Local retrieval finds candidate passages and retains their source metadata.
+2. The app builds bounded extracts copied exactly from the indexed text.
+3. The model returns only passage IDs through a constrained JSON schema.
+4. JavaScript validates the response and rejects malformed output or unknown IDs.
+5. The app displays the original extracts, source details, and reference links.
+   Editorial summaries are identified separately from original-source quotations.
 
-The shared map toolbar offers Streets (OpenStreetMap), Topographic (OpenTopoMap),
-Satellite, and Satellite + labels in both 2D and Cesium 3D. Satellite uses the
-[EOX Cloudless 2016 mosaic](https://maps.eox.at/) under CC BY 4.0, with optional
-EOX/MapServer labels from OpenStreetMap. Its year is shown in the selector; it is
-not live imagery. Provider credits remain on the map. The selected imagery
-persists in this browser, while changing layers preserves the camera and selected
-candidate. Tiles stream on demand; no tiles are bulk downloaded. Elevation comes
-from Mapterhorn. Set `VITE_MAP_TILES` to a compatible raster endpoint to replace
-the Streets layer, and update its attribution in `src/lib/imagery.js`. Maps show modern
-terrain at native scale. The reconstruction lab hides modern map labels and shows
-dated evidence by period where available. Its registry covers every atlas place;
-only four linked place records currently have a dated evidence study, and no ancient
-shoreline, river, or building geometry has been imported. The Galilee elevation
-screening is an uncalibrated experiment on modern terrain, not an ancient water map.
-See [landscape evidence and vertical datum limits](docs/ancient-landscape-evidence.md).
-Regions may be represented by a reference point. OpenBible source rankings are
-historical aggregates, not current probabilities.
+An empty selection is reported explicitly. Rejected output is not converted into
+an apparently supported answer. This prevents model-written quotations and
+invented reference IDs from entering the response; it does not guarantee that a
+selected extract answers the question or represents an author’s settled position.
+An objection, survey, or historical polemic must still be read in context.
+The conversation presents evidence for each question; it is not a verified
+theological verdict or a complete survey of the relevant traditions. A valid
+source ID and an exact quotation do not establish that the source supports a
+proposed conclusion.
 
-## Data and provenance
+Follow-up questions can use up to three earlier user questions from the selected
+conversation branch to resolve context. Earlier AI responses are not treated as
+source evidence. A standalone question or a new explicit passage starts an
+independent research context.
 
-`public/data/catalog.json` describes installed translations and source gaps.
-`public/data/sources.json` records source URLs, byte counts, and SHA-256 hashes.
-`sources.lock.json` pins repository revisions. Complete original downloads stay in
-the ignored `.cache/` directory. Refresh the derived library with:
+See [the local AI quality report](docs/local-ai-quality.md) for the implemented
+checks, evaluation cases, and remaining limitations. The [recorded WebGPU
+evaluation](docs/local-ai-browser-evaluation.json) preserves actual requests and
+outputs, including an omitted source in a multi-author comparison. Its five
+development cases are not a certification of accuracy or neutrality.
+
+### Custom training
+
+The earlier **Scripture Qwen3 0.6B** adaptation remains available as an
+experimental training artifact, separate from the default instruction model.
+Its browser package is about **347 MB**. It was trained locally with MLX QLoRA
+on historical texts from Christianity, Judaism, and Islam, then exported for MLC
+and WebGPU.
+
+The training objective was next-token prediction, not reviewed theological
+question answering. The measured loss improvement did not establish reliable
+attribution, source selection, or religious neutrality. The first unsuccessful
+run and the later conservative run are documented rather than presented as
+evidence of expertise.
+
+```sh
+npm run training:prepare       # Source-separated, provenance-tracked data splits
+npm run training:encyclopedia  # Separate attributed Wikipedia section export
+npm run training:plan          # Validate inputs and write a plan; does not train
+```
+
+Actual training, evaluation, quantization, and browser export commands are in
+the [small-model training report](docs/training-small-model.md).
+The [research data guide](docs/research-data.md) explains rights, splits, and
+coverage. Wikipedia was exported separately and was not used in that training run.
+Training runs locally through MLX; the browser is the inference runtime.
+
+## Data and sources
+
+These are the counts in the checked-in dataset, not claims of exhaustive coverage:
+
+| Collection | Included |
+| --- | ---: |
+| English reading editions | 14 |
+| Ranked verse cross-references | 344,799 |
+| Greek lemmas / Hebrew lemmas | 5,518 / 8,457 |
+| Biblical places / candidate identifications | 1,342 / 4,370 |
+| Geography verse links | 5,616 across 860 chapters |
+| Abridged encyclopedia articles | 792 |
+| Historical theological source editions | 13 |
+| Historical research passages | 4,465; approximately 1.45 million words |
+
+**Installed translations:** BSB, WEB, KJV, ASV, BBE, Darby, YLT, DRC, Webster,
+JPS 1917, Rotherham, Geneva 1599, NHEB, and CPDV. DRC and CPDV contain 73 books;
+JPS contains the Tanakh. Whole-edition JSON ZIP downloads include source notices.
+
+NIV, ESV, NLT, NASB, NKJV, CSB, NRSVue, and NET are not installed. The library
+links to publisher information; adding them requires an appropriate license or
+authorized provider. No text from another edition silently fills an upstream gap.
+
+The theological collection includes named Christian, Jewish, and Muslim authors
+with their dates, translators, and historical perspectives. It is a selective
+collection of reusable historical editions, not a survey representative of every
+community. Contemporary scholarship and many schools within all three religions
+remain underrepresented. The [source manifest](public/data/research/manifest.json)
+and [coverage guide](docs/research-data.md) describe those gaps.
+
+### Provenance and reuse
+
+| Source | Use in Scripture |
+| --- | --- |
+| [Scrollmapper](https://github.com/scrollmapper/bible_databases), [Thiago Bodruk](https://github.com/thiagobodruk/bible), [TehShrike WEB](https://github.com/TehShrike/world-english-bible) | English editions, with individual edition notices. |
+| [MACULA Hebrew](https://github.com/Clear-Bible/macula-hebrew) and [MACULA Greek](https://github.com/Clear-Bible/macula-greek) | CC BY 4.0 linguistic annotations, with underlying text credits retained. |
+| [OpenBible cross-references](https://www.openbible.info/labs/cross-references/) and [geocoding data](https://github.com/openbibleinfo/Bible-Geocoding-Data) | Attributed verse links, place records, candidates, and bibliography. |
+| [SIL libpalaso](https://github.com/sillsdev/libpalaso) | Verse-number mappings. |
+| [Wikipedia](https://en.wikipedia.org/) | Abridged CC BY-SA 4.0 material with revision and contributor-history links. |
+| [Project Gutenberg](https://www.gutenberg.org/) and [CCEL](https://ccel.org/) | Historical research editions with per-source rights and download hashes. |
+| [OpenStreetMap](https://www.openstreetmap.org/copyright), [OpenTopoMap](https://opentopomap.org/about), [EOX](https://maps.eox.at/), and [Mapterhorn](https://mapterhorn.com/) | Modern map imagery and elevation, with provider credits. |
+
+[`sources.lock.json`](sources.lock.json) pins scripture source revisions;
+[`public/data/sources.json`](public/data/sources.json) records source URLs and
+hashes. Geography, encyclopedia, and research manifests retain their own
+provenance. Original downloads are cached in the ignored `.cache/` directory.
+Wikipedia references are bibliographic pointers: the bodies of linked papers
+are not automatically downloaded or licensed for training.
 
 ```sh
 npm run data
+npm run data:geography
+npm run data:research
 ```
 
-The downloader uses Python’s standard library and reuses cached files. To deliberately
-update a source, remove its cache entries and its revision in `sources.lock.json`,
-then regenerate and re-run validation. Never substitute another edition to fill gaps.
+These commands reuse cached sources and pinned revisions. Refreshing a source is
+an explicit maintenance action; validate the regenerated files afterward.
+Dataset licenses and attribution notices are in [`public/licenses/`](public/licenses/).
+Public-domain status depends on jurisdiction; KJV Crown rights apply in the UK.
 
-Data comes from:
+## Architecture
 
-- [Scrollmapper](https://github.com/scrollmapper/bible_databases): English editions,
-  with individual edition notices and repository MIT license.
-- [Thiago Bodruk’s Bible repository](https://github.com/thiagobodruk/bible): KJV text.
-- [TehShrike’s World English Bible](https://github.com/TehShrike/world-english-bible):
-  WEB text, including paragraph and poetic line segments.
-- [MACULA Hebrew](https://github.com/Clear-Bible/macula-hebrew) and
-  [MACULA Greek](https://github.com/Clear-Bible/macula-greek): CC BY 4.0 linguistic
-  annotations. Required underlying credits are in `public/licenses/` and the Sources dialog.
-- [OpenBible.info](https://www.openbible.info/labs/cross-references/): CC BY references.
-- [SIL libpalaso](https://github.com/sillsdev/libpalaso): verse-number mappings.
+The app is a static Svelte 5 application built by Vite. Reader data comes from
+local JSON assets; retrieval and model inference run in separate workers.
 
-The app’s code license does not override these data licenses. KJV Crown rights apply
-in the UK. Original-language ZIP downloads include attribution and modification notices.
+| Path | Responsibility |
+| --- | --- |
+| [`src/App.svelte`](src/App.svelte) | Reading context, navigation, library, search, bookmarks, and preferences. |
+| [`src/lib/StudyPanel.svelte`](src/lib/StudyPanel.svelte), [`data.js`](src/lib/data.js) | Original-language study, concordances, verse mapping, and cached data access. |
+| [`src/lib/Atlas.svelte`](src/lib/Atlas.svelte), [`MapView.svelte`](src/lib/MapView.svelte), [`Encyclopedia.svelte`](src/lib/Encyclopedia.svelte) | Passage geography, maps, reconstruction evidence, and encyclopedia views. |
+| [`src/lib/Research.svelte`](src/lib/Research.svelte) | Bible AI conversation, question history, dictation, evidence selection, and model controls. |
+| [`src/lib/research.worker.js`](src/lib/research.worker.js), [`retrieval.js`](src/lib/retrieval.js) | Local indexing, passage retrieval, reference matching, and source diversity. |
+| [`src/lib/model.worker.js`](src/lib/model.worker.js), [`grounding.js`](src/lib/grounding.js) | WebLLM inference, constrained passage selection, validation, and exact-text responses. |
+| [`scripts/`](scripts/) | Data import, integrity checks, training, model packaging, and build assets. |
+| [`tests/`](tests/) | Data, retrieval, grounding, geography, terrain, and device checks. |
 
-## Current limits
+### GitHub Pages
 
-- NIV, ESV, NLT, NASB, NKJV, CSB, NRSVue, and NET are **not downloaded**. The library
-  links to publisher information. A suitable license or authorized provider is needed
-  before adding them. No licensed-provider integration has been implemented.
-- English scope is the default. Hebrew/Aramaic and Greek are study datasets, not
-  selectable reading translations. Septuagint, Latin, other world languages, and
-  original texts for deuterocanonical books are not installed.
-- Some upstream text exports have empty verses caused by omissions, numbering, or
-  extraction gaps. These are exposed in the UI and download metadata, never silently
-  filled with another translation. Entirely empty books/chapters are excluded.
-- Automatic study alignment and comparison are disabled for JPS, DRC, and CPDV,
-  which use native numbering. Their texts remain readable and downloadable.
-- Whole-verse English/Hebrew mappings are applied. Split-verse distinctions and
-  textual variants are not an exhaustive critical apparatus. English words are
-  not individually aligned to source-language tokens.
-- Glosses are contextual aids, not a comprehensive dictionary. Shared lemmas do
-  not imply identical meaning. Cross-reference previews show the first verse of a range.
-- Bookmarks and preferences are browser-local. Downloads save data files; this is
-  not yet an installable offline PWA.
-- The encyclopedia, archaeological catalog, and theological library are broad
-  starting collections, **not exhaustive**. Missing artifact or literature sections
-  are disclosed. Historical availability and public-domain status do not make a
-  source authoritative or representative of a whole religion.
-- Internal diversity and contemporary scholarship remain unevenly covered.
-  Christian, Jewish, and Muslim categories are not treated as interchangeable.
-- Exact passage geography uses English numbering for the 66-book corpus. It is
-  disabled for native-numbered editions; the standalone atlas remains searchable.
-- The browser runtime and map library are loaded separately from the reader.
-  Initial model downloads and GPU compilation can take time; this is not a
-  model-training runtime in the browser.
+[`pages.yml`](.github/workflows/pages.yml) installs dependencies, checks the app,
+runs tests, builds, and publishes `dist/` on pushes to `main`. It obtains
+`BASE_PATH` from the Pages configuration so workers, data, downloads, and Cesium
+assets resolve beneath `/bible/`.
 
-## Structure
-
-`src/App.svelte` owns navigation, reader, search, library, and preferences.
-`src/lib/StudyPanel.svelte` handles source words and reference exploration.
-`src/lib/data.js` contains caching, verse labels, mapping, and concordance access.
-`scripts/download_data.py` builds data; `scripts/verify_data.py` checks all concordance
-targets, download metadata, archive integrity, and counts.
-`Atlas.svelte`, `MapView.svelte`, and `Encyclopedia.svelte` handle study context.
-`Research.svelte` and two dedicated workers isolate retrieval and model inference
-from the reading UI. `retrieval.js` handles ranking, source diversity and citation
-identifier checks; `ai.js` defines the comparative research prompt.
-
-## GitHub Pages
-
-`.github/workflows/pages.yml` validates and builds the app on pushes to `main`, then
-publishes `dist/` with GitHub Pages. `BASE_PATH` comes from the Pages configuration,
-so data files, downloads, workers, and Cesium assets work beneath the project URL.
-To reproduce the build locally: `BASE_PATH=/bible/ npm run build`.
-
-The local dev server exposes hardware information only at its development endpoint
-for model compatibility checks. The static site uses browser WebGPU limits and
-privacy-capped memory/cache estimates; it contains no hardcoded host profile.
-
-The trained model releases are separate from Git history. `model-release.json`
-pins the browser archive's size and SHA-256; `scripts/install_browser_model.py`
-checks and installs it into `dist/` after building. For a local packaged preview:
+The custom training artifact is stored in a GitHub release rather than Git
+history. [`model-release.json`](model-release.json) pins its size and SHA-256;
+[`install_browser_model.py`](scripts/install_browser_model.py) verifies and adds
+it to `dist/` during deployment. To include that artifact in a local preview:
 
 ```sh
 BASE_PATH=/bible/ npm run build
@@ -233,5 +271,29 @@ python3 scripts/install_browser_model.py
 BASE_PATH=/bible/ npm run preview -- --port 4174
 ```
 
-The training pipeline and final model limitations are documented in
-[docs/training-small-model.md](docs/training-small-model.md).
+The default Qwen2.5 model downloads separately when selected. Hardware information
+from the development machine is available only through a development endpoint;
+the published site uses browser capability checks.
+
+## Scope and limitations
+
+- Hebrew/Aramaic and Greek are study datasets, not selectable reading editions.
+  Septuagint, Latin, other world languages, and original-language deuterocanonical
+  texts are not installed.
+- Native numbering is preserved for JPS, DRC, and CPDV. Automatic comparison,
+  language alignment, and exact passage geography are disabled where compatible
+  mappings are unavailable.
+- Lemma matches and contextual glosses are study aids. The app does not provide
+  individual English-word alignment or an exhaustive textual-critical apparatus.
+- Place candidates preserve uncertainty. Coordinates may represent regions or
+  approximate locations; historical source scores are not current probabilities.
+- Encyclopedia sections are abridged and automatically grouped. Archaeological,
+  artifact, literature, and theological coverage remain incomplete.
+- Bookmarks and preferences are browser-local. Question history lasts for the
+  session. Downloadable data and cached models do not make the app an offline PWA.
+
+## License
+
+Application code is licensed under [Apache 2.0](LICENSE). Scripture texts,
+annotations, encyclopedia material, maps, and models retain their own licenses.
+The application license does not replace those source terms.

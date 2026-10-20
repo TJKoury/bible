@@ -1,4 +1,4 @@
-import { createIndex, searchIndex, dossierDocuments } from './retrieval.js';
+import { createIndex, searchIndex, dossierDocuments, prepareResearchDocuments, parsePassages, matchesPassage, queryTerms, readingContextMatches, prioritizeCurrentQuestion } from './retrieval.js';
 import { assetUrl } from './data.js';
 let index;
 let catalog;
@@ -10,7 +10,7 @@ async function load() {
   ]);
   catalog = books;
   const sources = Object.fromEntries(manifest.sources.map(s => [s.id, s]));
-  const documents = chunks.map(c => ({ ...sources[c.sourceId], ...c, sourceId: c.sourceId, sourceUrl: sources[c.sourceId]?.sourceUrl }));
+  const documents = prepareResearchDocuments(chunks.map(c => ({ ...sources[c.sourceId], ...c, sourceId: c.sourceId, sourceUrl: sources[c.sourceId]?.sourceUrl })));
   self.postMessage({ type: 'progress', text: 'Indexing the biblical texts…' });
   for (let start = 1; start <= 66; start += 8) {
     const ids = Array.from({length: Math.min(8, 67-start)},(_,i) => start+i);
@@ -40,7 +40,7 @@ async function load() {
   } catch { /* Optional dossier; the downloaded primary-source index remains usable. */ }
   self.postMessage({ type:'progress', text:'Building the local source index…' });
   index = createIndex(documents);
-  return { count:documents.length, manifest };
+  return { count:index.documents.length, manifest };
 }
 self.onmessage = async ({data}) => {
   try {
@@ -48,24 +48,29 @@ self.onmessage = async ({data}) => {
     const metadata = await setup;
     if (data.type === 'init') { self.postMessage({type:'ready', ...metadata}); return; }
     if (data.type === 'search') {
-      let result = searchIndex(index, data.question, {traditions:data.traditions,limit:16});
-      // A question with an explicit passage also retrieves its actual text.
-      const normalized = data.question.toLowerCase();
-      const matching = catalog.books.find(b => b.id <= 66 && new RegExp(`\\b${b.name.toLowerCase()}\\s+\\d+`).test(normalized));
-      if (matching && data.context?.aligned !== false && (!data.traditions.length || data.traditions.includes('Biblical texts'))) {
-        const [,chapter,verse] = normalized.match(new RegExp(`\\b${matching.name.toLowerCase()}\\s+(\\d+)(?::(\\d+))?`)) || [];
-        const chapterDocs = index.documents.filter(d => d.ref?.startsWith(`${matching.id}.${chapter}.`));
-        const exact = verse ? chapterDocs.find(d => { const v = Number(d.ref.split('.')[2]); return Number(verse) >= v && Number(verse) < v + 3; }) : chapterDocs[0];
-        const ranked = searchIndex(createIndex(chapterDocs), data.question.replace(new RegExp(`${matching.name}\\s+\\d+(?::\\d+)?`,'i'),''), {limit:2,diverse:false});
-        const explicit = [exact,...ranked].filter((d,i,a)=>d && a.findIndex(v=>v?.id === d.id) === i);
-        const contextual = explicit.map(doc => {
-          const position = chapterDocs.findIndex(d => d.id === doc.id);
+      const traditions = data.traditions || [];
+      // An otherwise generic "explain this passage" follows the current reading.
+      // An explicit topic or reference is allowed to leave that reading context.
+      const question = !parsePassages(data.question).length && !queryTerms(data.question).length && data.context?.label
+        ? `${data.question} ${data.context.label}` : data.question;
+      const currentQuestion = typeof data.currentQuestion === 'string' && data.currentQuestion.trim() !== data.question.trim() ? data.currentQuestion : '';
+      let result = searchIndex(index, question, {traditions,limit:16,currentQuestion});
+      const references = parsePassages(question, catalog.books.filter(book => book.id <= 66));
+      if (!traditions.length || traditions.includes('Biblical texts')) {
+        const contextual = [];
+        const included = new Set();
+        for (const reference of references) {
+          const chapterDocs = index.documents.filter(doc => doc.ref?.startsWith(`${reference.book}.${reference.chapter}.`));
+          const doc = result.find(hit => hit.ref && matchesPassage(hit,reference));
+          if (!doc || included.has(doc.id)) continue;
+          const position = chapterDocs.findIndex(hit => hit.id === doc.id);
           const neighbors = chapterDocs.slice(Math.max(0,position-1),position+2);
           const first = neighbors[0];
           const lastVerse = neighbors.at(-1).title.match(/(?:–|:)(\d+)$/)?.[1];
-          return {...doc, ref:first.ref, title:`${matching.name} ${chapter}:${first.ref.split('.')[2]}–${lastVerse}`, text:neighbors.map(d=>d.text).join(' ')};
-        });
-        result = [...contextual, ...result.filter(d => !explicit.some(e => e.id === d.id))].slice(0, 16);
+          neighbors.forEach(hit => included.add(hit.id));
+          contextual.push({...doc, ref:first.ref, title:`${reference.name} ${reference.chapter}:${first.ref.split('.')[2]}–${lastVerse}`, locator:`${reference.name} ${reference.chapter}`, text:neighbors.map(hit=>hit.text).join(' ')});
+        }
+        result = [...contextual, ...result.filter(doc => !included.has(doc.id))].slice(0,16);
       }
       // Fetch actual retained sections only for encyclopedic hits in this search.
       result = await Promise.all(result.map(async doc => {
@@ -73,15 +78,19 @@ self.onmessage = async ({data}) => {
         try {
           const article = await get(`/data/encyclopedia/articles/${encodeURIComponent(doc.articleId)}.json`);
           const sections = article.sections.map((s,i)=>({...doc,id:`${doc.id}-${i}`,text:s.text,heading:s.title,locator:s.title}));
-          const best = searchIndex(createIndex(sections),data.question,{limit:1,diverse:false})[0];
+          const best = searchIndex(createIndex(sections),question,{limit:1,diverse:false,currentQuestion})[0];
           return best ? {...best,sourceUrl:article.revisionUrl} : doc;
         } catch { return doc; }
       }));
-      if(data.context?.passageText && (!data.traditions.length || data.traditions.includes('Biblical texts'))) {
+      if(readingContextMatches(data.question,data.context) && (!traditions.length || traditions.includes('Biblical texts'))) {
         const ctx=data.context;
         const current={id:`reading-${ctx.key}`,sourceId:`reading-${ctx.edition}-${ctx.book}`,title:`${ctx.label} · surrounding passage`,author:ctx.book<=39?'Hebrew Bible':'Biblical text',tradition:'Biblical texts',perspective:ctx.editionTitle,ref:ctx.ref,edition:ctx.edition,locator:`Current reading · ${ctx.edition}`,text:ctx.passageText,sourceUrl:new URL(assetUrl(`/data/translations/${ctx.edition}/${ctx.book}.json`),self.location.href).href,license:catalog.translations.find(t=>t.id===ctx.edition)?.license};
-        result=[current,...result].slice(0,16);
+        // Replace the same retrieved passage instead of citing two editions as
+        // independent support for an otherwise identical context window.
+        const [book,chapter,verse] = ctx.ref.split('.').map(Number);
+        result=[current,...result.filter(doc => !doc.ref || !matchesPassage(doc,{book,chapter,verse}))].slice(0,16);
       }
+      result = prioritizeCurrentQuestion(result,currentQuestion);
       self.postMessage({type:'results',request:data.request,results:result});
     }
   } catch (e) { self.postMessage({type:'error',request:data.request,message:e.message}); }

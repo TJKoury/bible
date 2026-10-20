@@ -1,4 +1,5 @@
 export const models = [
+  { id:'Qwen2.5-1.5B-Instruct-q4f16_1-MLC', title:'Qwen2.5 · 1.5B', detail:'About 880 MB download · 2+ GB GPU memory · instruction model', size:'880 MB',downloadGB:0.881,memoryGB:2, revision:'9bd564b064631febf14deadcac492efb761d60c3' },
   { id:'scripture-qwen3-0.6b-v2', title:'Scripture · 0.6B · experimental', detail:'About 347 MB download · 1.5+ GB GPU memory · custom historical-text training', size:'347 MB',downloadGB:0.347,memoryGB:1.5,custom:true,baseId:'Qwen3-0.6B-q4f16_1-MLC',path:'models/scripture-qwen3-0.6b-v2/resolve/v2/' },
   { id:'Qwen3-0.6B-q4f16_1-MLC', title:'Qwen3 · 0.6B', detail:'About 400 MB download · 1.5+ GB GPU memory · limited reasoning', size:'400 MB',downloadGB:0.4,memoryGB:1.5 },
   { id:'Qwen3-1.7B-q4f16_1-MLC', title:'Qwen3 · 1.7B', detail:'About 1.1 GB download · 2+ GB GPU memory', size:'1.1 GB',downloadGB:1.1,memoryGB:2 },

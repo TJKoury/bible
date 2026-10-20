@@ -279,7 +279,7 @@ def main():
                         "No quantity of downloaded text establishes doctrinal truth or consensus."],
                   attributionPolicy="Identify the author and historical perspective; distinguish assertion, quotation, objection, reply and editorial survey. Do not infer group consensus from one author.",
                   licenseNotice="/licenses/research-notices.txt",
-                  trainingStatus="Downloaded and segmented; no custom language-model weights trained.")
+                  trainingStatus="Used for retained experimental Qwen3-0.6B v2 continued-text QLoRA training; MLX and WebGPU-compatible MLC artifacts exist. This does not establish theological answer accuracy, citation reliability, or neutrality. See docs/training-small-model.md and docs/local-ai-quality.md.")
     write_json(OUT / "chunks.json", all_chunks)
     write_json(OUT / "manifest.json", result)
     write_json(lock_path, new_locks)

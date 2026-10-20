@@ -316,7 +316,7 @@
   <div class="workspace">
     <aside class="sidebar" class:open={sidebarOpen} aria-label="Bible navigation">
       <nav class="main-nav" aria-label="Main navigation">
-        {#each [['reader', 'Read & explore', 'book'], ['encyclopedia', 'Study encyclopedia', 'compass'], ['atlas', 'Geography & maps', 'map'], ['research', 'Research desk', 'spark'], ['library', 'Translation library', 'library'], ['saved', 'Saved passages', 'bookmark']] as [value, title, icon]}
+        {#each [['reader', 'Read & explore', 'book'], ['encyclopedia', 'Study encyclopedia', 'compass'], ['atlas', 'Geography & maps', 'map'], ['research', 'Bible AI', 'spark'], ['library', 'Translation library', 'library'], ['saved', 'Saved passages', 'bookmark']] as [value, title, icon]}
           <button class="nav-item" class:active={view === value} aria-current={view === value ? 'page' : undefined} onclick={() => setView(value)}><Icon name={icon} />{title}{#if value === 'library' || value === 'saved'}<span class="nav-count">{value === 'library' ? catalog.translations.length : saved.length}</span>{/if}</button>
         {/each}
       </nav>
@@ -331,7 +331,10 @@
           <button class="book-button" class:active={book === item.id} onclick={() => navigate(`${item.id}.1.1`)} aria-current={book === item.id ? 'true' : undefined}>{item.name}{#if book === item.id}<span class="book-indicator"></span>{:else}<small>{edition.books.find(b => b.id === item.id)?.chapters.length}</small>{/if}</button>
         {/each}
       </div>
-      <button class="sidebar-foot" onclick={() => sourcesDialog.showModal()}><span class="source-dot"></span>Sources & attribution<Icon name="arrow-up-right" /></button>
+      <div class="sidebar-footer">
+        <button class="sidebar-foot" onclick={() => sourcesDialog.showModal()}><span class="source-dot"></span>Sources & attribution<Icon name="arrow-up-right" /></button>
+        <a class="sidebar-foot" href="https://github.com/TJKoury/bible" target="_blank" rel="noreferrer">GitHub<Icon name="arrow-up-right" /></a>
+      </div>
     </aside>
     <main class="main-content">
       {#if view !== 'reader'}
@@ -445,7 +448,7 @@
     <p>SBL Greek New Testament, © 2010 Society of Biblical Literature and Logos Bible Software, <a href={assetUrl('/licenses/SBLGNT.txt')}>CC BY 4.0</a>. Data has been converted into chapter JSON and lemma indexes; UBS semantic-domain fields are omitted. <a href={assetUrl('/licenses/macula-hebrew.md')}>Full Hebrew notices</a> · <a href={assetUrl('/licenses/macula-greek.md')}>Full Greek notices</a>.</p>
     <h3>References & verse numbering</h3><p><a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noreferrer">OpenBible.info cross-references</a>, CC BY. Entries retain source vote rankings and ranges. Hebrew/English verse mapping comes from <a href="https://github.com/sillsdev/libpalaso" target="_blank" rel="noreferrer">SIL libpalaso</a> (<a href={assetUrl('/licenses/SIL.txt')}>license</a>). Whole-verse mappings are applied; some split-verse distinctions and textual variants are not represented. Native-numbered JPS, DRC, and CPDV editions remain readable, but automatic study alignment is disabled for them.</p>
     <h3>Encyclopedia, geography & research</h3><p>Wikipedia article excerpts are adapted and abridged under CC BY-SA 4.0. Each entry links to its source revision and contributor history. OpenBible.info geography is CC BY 4.0; candidate identifications and uncertainty are preserved. Online maps use OpenStreetMap, OpenTopoMap, and EOX Cloudless 2016 satellite imagery (CC BY 4.0), with provider credits displayed on the map. Satellite imagery is a dated mosaic, not a live view or ancient reconstruction. Elevation uses Mapterhorn terrain data.</p>
-    <p>The <a href={assetUrl('/data/research/manifest.json')}>research source manifest</a> records authors, perspectives, dates, licenses, and coverage gaps. Historical texts do not represent every contemporary believer or school. The optional WebGPU assistant uses Qwen3. The Research desk distinguishes pretrained browser models from experimental custom training artifacts and reports their evaluation limits. Source search and inference run in this browser; model downloads use Hugging Face and GitHub.</p>
+    <p>The <a href={assetUrl('/data/research/manifest.json')}>research source manifest</a> records authors, perspectives, dates, licenses, and coverage gaps. Historical texts do not represent every contemporary believer or school. The optional WebGPU assistant uses Qwen instruction models to select source passages. Bible AI distinguishes pretrained browser models from experimental custom training artifacts and reports their evaluation limits. Source search and inference run in this browser; model downloads use Hugging Face and GitHub.</p>
     <p>Download the <a href={assetUrl('/data/sources.json')} download>source URLs and SHA-256 checksums</a>. Each translation download includes its source and rights information. Code licensing does not replace the individual dataset licenses.</p>
   </div>
 </dialog>

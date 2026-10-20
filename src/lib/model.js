@@ -10,9 +10,11 @@ export class LocalModel {
       if (data.type === 'token') { pending.onToken?.(data.delta); return; }
       this.pending.delete(data.id);
       if (data.type === 'error') pending.reject(new Error(data.message));
-      else pending.resolve();
+      else pending.resolve(data.result);
     };
-    this.worker.onerror = () => this.fail(new Error('The WebGPU model worker stopped. Unload and reload the model to retry.'));
+    this.worker.onerror = event => this.fail(new Error(
+      `The WebGPU model worker stopped${event.message ? `: ${event.message}` : '.'} Unload and reload the model to retry.`
+    ));
   }
   send(type, data = {}, onToken) {
     const id = ++this.sequence;
@@ -22,7 +24,7 @@ export class LocalModel {
     });
   }
   load(modelId) { return this.send('load',{modelId}); }
-  generate(messages,onToken) { return this.send('generate',{messages},onToken); }
+  generate(messages,onToken,options = {}) { return this.send('generate',{messages,options},onToken); }
   interrupt() { return this.send('interrupt'); }
   clear(modelId) { return this.send('clear',{modelId}); }
   fail(error) { for (const pending of this.pending.values()) pending.reject(error); this.pending.clear(); }

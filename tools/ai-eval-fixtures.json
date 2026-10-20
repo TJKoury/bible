@@ -1,0 +1,202 @@
+[
+  {
+    "id": "john1-word",
+    "question": "According to John 1:1–4, what is said about the Word? Identify the book correctly and cite the source.",
+    "evidence": [
+      {
+        "title": "John 1:1–4",
+        "author": "Biblical text",
+        "tradition": "Biblical texts",
+        "perspective": "BSB English translation",
+        "locator": "John 1:1–4",
+        "text": "1 In the beginning was the Word, and the Word was with God, and the Word was God. 2 He was with God in the beginning. 3 Through Him all things were made, and without Him nothing was made that has been made. 4 In Him was life, and that life was the light of men.",
+        "citation": "[S1]",
+        "excerpt": "1 In the beginning was the Word, and the Word was with God, and the Word was God. 2 He was with God in the beginning. 3 Through Him all things were made, and without Him nothing was made that has been made. 4 In Him was life, and that life was the light of men."
+      }
+    ]
+  },
+  {
+    "id": "mercy-authors",
+    "question": "Compare what these named authors say about divine mercy. Attribute each view to its author rather than to every Christian, Jew or Muslim. Cite each source.",
+    "evidence": [
+      {
+        "id": "calvin-institutes-2:212",
+        "gutenbergId": 64392,
+        "title": "Institutes of the Christian Religion, Volume II",
+        "author": "John Calvin",
+        "tradition": "Christianity",
+        "perspective": "Reformed",
+        "publicationDate": "1559; John Allen translation, sixth American edition",
+        "translator": "John Allen",
+        "sourceUrl": "https://www.gutenberg.org/ebooks/64392",
+        "downloadUrl": "https://www.gutenberg.org/cache/epub/64392/pg64392.txt",
+        "license": "Public domain in the USA; see source edition and local copyright law.",
+        "licenseUrl": "https://www.gutenberg.org/policy/license.html",
+        "sourceType": "historical primary text",
+        "trainingEligible": true,
+        "coverageNotes": "Volume II only: not the complete Institutes. Historical polemics describe this author's position.",
+        "sha256": "a1e35c9f41d978f7b3257f9115b59acfd2a80c41ae11736628710b773cef1003",
+        "revision": "sha256:a1e35c9f41d978f7b3257f9115b59acfd2a80c41ae11736628710b773cef1003",
+        "chunkCount": 941,
+        "wordCount": 337812,
+        "sourceId": "calvin-institutes-2",
+        "ordinal": 212,
+        "text": "VI. If it be objected, that from these inferior and inconsiderable benefits, it must not be concluded respecting the life to come, that he who has been raised to the honour of primogeniture is therefore to be considered as adopted to the inheritance of heaven,—for there are many who spare not Paul, as though in his citation of Scripture testimonies he had perverted them from their genuine meaning,—I answer as before, that the apostle has neither erred through inadvertency, nor wilfully perverted testimonies of Scripture. But he saw, what they cannot bear to consider, that God intended by an earthly symbol to declare the spiritual election of Jacob, which otherwise lay concealed behind his inaccessible tribunal. For unless the primogeniture granted him had reference to the future world, it was a vain and ridiculous kind of blessing, which produced him nothing but various afflictions and adversities, grievous exile, numerous cares, and bitter sorrows. Discerning, beyond all doubt, that God’s external blessing was an indication of the spiritual and permanent blessing he had prepared for his servant in his kingdom, Paul hesitated not to argue from the former in proof of the latter. It must also be remembered, that to the land of Canaan was annexed the pledge of the celestial residence; so that it ought not to be doubted that Jacob was ingrafted with angels into the body of Christ, that he might be a partaker of the same life. While Esau is rejected, therefore, Jacob is elected, and distinguished from him by God’s predestination, without any difference of merit. If you inquire the cause, the apostle assigns the following: “For he saith to Moses, I will have mercy on whom I will have mercy, and I will have compassion on whom I will have compassion.”[472] And what is this but a plain declaration of the Lord, that he finds no cause in men to induce him to show favour to them, but derives it solely from his own mercy; and therefore that the salvation of his people is his work? When God fixes your salvation in himself alone, why will you descend into yourself? When he assigns you his mere mercy, why will you have recourse to your own merits? When he confines all your attention to his mercy, why will you divert part of it to the contemplation of your own works?",
+        "heading": "CHAPTER XXII. TESTIMONIES OF SCRIPTURE IN CONFIRMATION OF THIS DOCTRINE.",
+        "locator": "Source text lines 8042–8112",
+        "startLine": 8042,
+        "endLine": 8112,
+        "score": 9.205389797915915,
+        "matched": 3,
+        "citation": "[S1]",
+        "excerpt": "… While Esau is rejected, therefore, Jacob is elected, and distinguished from him by God’s predestination, without any difference of merit. If you inquire the cause, the apostle assigns the following: “For he saith to Moses, I will have mercy on whom I will have mercy, and I will have compassion on whom I will have compassion.”[472] And what is this but a plain declaration of the Lord, that he finds no cause in men to induce him to show favour to them, but derives it solely from his own mercy; and therefore that the salvation of his people is his work? When God fixes your salvation in himself alone, why will you descend into yourself? When he assigns you his mere mercy, why will you have recourse to your own merits? When he confines all your attention to his mercy, why will you divert part of it to the contemplation of your own works? …"
+      },
+      {
+        "id": "kohler-theology:116",
+        "gutenbergId": 32722,
+        "title": "Jewish Theology, Systematically and Historically Considered",
+        "author": "Kaufmann Kohler",
+        "tradition": "Judaism",
+        "perspective": "Reform Jewish / historical theology",
+        "publicationDate": "1918",
+        "translator": "",
+        "sourceUrl": "https://www.gutenberg.org/ebooks/32722",
+        "downloadUrl": "https://www.gutenberg.org/cache/epub/32722/pg32722.txt",
+        "license": "Public domain in the USA; see source edition and local copyright law.",
+        "licenseUrl": "https://www.gutenberg.org/policy/license.html",
+        "sourceType": "historical primary text",
+        "trainingEligible": true,
+        "coverageNotes": "A historical Reform perspective, not a neutral proxy for all Judaism.",
+        "sha256": "186133127455757d48c33f63cde0cf6e68d77a11a8aba254a0dbef22775b595b",
+        "revision": "sha256:186133127455757d48c33f63cde0cf6e68d77a11a8aba254a0dbef22775b595b",
+        "chunkCount": 517,
+        "wordCount": 163724,
+        "sourceId": "kohler-theology",
+        "ordinal": 116,
+        "text": "Far remote from Judaism, however, is the doctrine that God would consign an otherwise righteous man to eternal doom, because he belongs to another creed or another race than that of the Jew. Wherever the heathens are spoken of as condemned at the last judgment, the presumption based upon centuries of sad experience was that their lives were full of injustice and wickedness. Indeed, milder teachers, whose view became the accepted one, maintained that truly righteous men are found among the heathen, who have therefore as much claim upon eternal salvation as the pious ones of Israel.(328)\n\nChapter XX. God’s Love and Compassion\n\n1. As justice forms the basis of human morality, with kindness and benevolence as milder elements to mitigate its sternness, so, according to the Jewish view, mercy and love represent the milder side of God, but by no means a higher attribute counteracting His justice. Love can supplement justice, but cannot replace it. The sages say:(329) “When the Creator saw that man could not endure, if measured by the standard of strict justice, He joined His attribute of mercy to that of justice, and created man by the combined principle of both.” The divine compassion with human frailty, felt by both Moses and Hosea, manifests itself in God’s mercy. Were it not for the weakness of the flesh, justice would have sufficed. But the divine plan of salvation demands redeeming love which wins humanity step by step for higher moral ends. The educational value of this love lies in the fact that it is a gift of grace, bestowed on man by the fatherly love of God to ward off the severity of full retribution. His pardon must conduce to a deeper moral earnestness.(330) “For with Thee there is forgiveness that Thou mayest be feared.”(331) R. Akiba says: “The world is judged by the divine attribute of goodness.”(332)",
+        "heading": "PART I. GOD",
+        "locator": "Source text lines 3496–3527",
+        "startLine": 3496,
+        "endLine": 3527,
+        "score": 14.255650348707423,
+        "matched": 4,
+        "citation": "[S2]",
+        "excerpt": "Far remote from Judaism, however, is the doctrine that God would consign an otherwise righteous man to eternal doom, because he belongs to another creed or another race than that of the Jew. Wherever the heathens are spoken of as condemned at the last judgment, the presumption based upon centuries of sad experience was that their lives were full of injustice and wickedness. Indeed, milder teachers, whose view became the accepted one, maintained that truly righteous men are found among the heathen, who have therefore as much claim upon eternal salvation as the pious ones of Israel.(328)\n\nChapter XX. God’s Love and Compassion\n\n1. As justice forms the basis of human morality, with kindness and benevolence as milder elements to mitigate its sternness, so, according to the Jewish view, mercy and love represent the milder side of God, but by no means a higher attribute counteracting His justice. Love can supplement justice, but cannot replace it. The sages say:(329) “When the Creator saw that man could not endure, if measured by the standard of strict justice, He joined His attribute of mercy to that of justice, and created man by the combined principle of both.” The divine compassion with human frailty, felt by both Moses and Hosea, manifests itself in God’s mercy. Were it not for the weakness of the flesh, justice would have sufficed. But the divine plan of salvation demands redeeming love which wins humanity step by step for higher moral ends. The educational value of this love lies in the fact that it is a gift of grace, bestowed on man by the fatherly love of God to ward off the severity of full retribution. His pardon must conduce to a deeper moral earnestness.(330) “For with Thee there is forgiveness that Thou mayest be feared.”(331) R. Akiba says: “The world is judged by the divine attribute of goodness.”(332)"
+      },
+      {
+        "id": "ameer-ali-islam:36",
+        "gutenbergId": 70136,
+        "title": "Islâm",
+        "author": "Syed Ameer Ali",
+        "tradition": "Islam",
+        "perspective": "Muslim modernist / apologetic",
+        "publicationDate": "1909",
+        "translator": "",
+        "sourceUrl": "https://www.gutenberg.org/ebooks/70136",
+        "downloadUrl": "https://www.gutenberg.org/cache/epub/70136/pg70136.txt",
+        "license": "Public domain in the USA; see source edition and local copyright law.",
+        "licenseUrl": "https://www.gutenberg.org/policy/license.html",
+        "sourceType": "historical primary text",
+        "trainingEligible": true,
+        "coverageNotes": "An author's historical apologetic presentation, not a comprehensive statement of Sunni or Shi'a doctrine.",
+        "sha256": "45a81f977a3d28824ec4ca6df0a700f1d381f4a4709d8b99b57128723b896e85",
+        "revision": "sha256:45a81f977a3d28824ec4ca6df0a700f1d381f4a4709d8b99b57128723b896e85",
+        "chunkCount": 66,
+        "wordCount": 16578,
+        "sourceId": "ameer-ali-islam",
+        "ordinal": 36,
+        "text": "=Pride and Vanity Condemned.=—Pride and vanity are condemned as sins, whilst forgiveness of offences, meekness, and humility are prescribed as duties. ‘Verily God loveth not the proud, the vain boaster’; ‘Call on Him with fear and longing’; ‘Verily the mercy of God is nigh unto the righteous’; ‘Turn aside evil with that which is better’; ‘Be of those who enjoin steadfastness and compassion on others’; ‘Forgiveness and kind speech are better than favours with annoyance’; ‘Blessed are the patient, the truthful, the lowly, and the charitable ... the forbearing who bridle their anger and forgive—God loveth those who do good to others’; ‘The servants of the Merciful are they that walk upon the earth softly; and when the ignorant speak unto them, they reply “Peace” ... those that invoke not with God any other God, and slay not a soul that God hath forbidden otherwise than by right; and commit not fornication ... they who bear not witness to that which is false; and when they pass by vain sport they pass it by with dignity: who say, “O our Lord, grant us of our wives and children such as shall be a comfort unto us, and make us examples unto the pious,” these shall be the rewarded, for that they persevered; and they shall be accosted in Paradise with welcome and salutation. For ever therein,—a fair abode and resting-place!’ ‘Adhere to those who forsake you; speak truth to your own heart; do good to every one that does ill to you!’\n\nFoulness is forbidden: ‘Truly my Lord hath forbidden filthy actions, whether open or secret and iniquity and violence’; ‘Commit not adultery, for it is a foul thing and an evil way’; ‘Let the believer restrain his eyes from lust.’\n\nQuarrelsomeness and public and private disturbance are prohibited. ‘And commit not disorders on the well-ordered earth.’\n\nCharity is not left to individual discretion, it is made part of the legal prescriptions. Every man possessed of income has to contribute a certain proportion of his wealth at the end of the year for the keep of the poor and the distressed.",
+        "heading": "CHAPTER I",
+        "locator": "Source text lines 731–764",
+        "startLine": 731,
+        "endLine": 764,
+        "score": 12.717366276537875,
+        "matched": 4,
+        "citation": "[S3]",
+        "excerpt": "=Pride and Vanity Condemned.=—Pride and vanity are condemned as sins, whilst forgiveness of offences, meekness, and humility are prescribed as duties. ‘Verily God loveth not the proud, the vain boaster’; ‘Call on Him with fear and longing’; ‘Verily the mercy of God is nigh unto the righteous’; ‘Turn aside evil with that which is better’; ‘Be of those who enjoin steadfastness and compassion on others’; ‘Forgiveness and kind speech are better than favours with annoyance’; ‘Blessed are the patient, the truthful, the lowly, and the charitable ... the forbearing who bridle their anger and forgive—God loveth those who do good to others’; ‘The servants of the Merciful are they that walk upon the earth softly; and when the ignorant speak unto them, they reply “Peace” ... those that invoke not with God any other God, and slay not a soul that God hath forbidden otherwise than by right; and commit not fornication ... they who bear not witness to that which is false; and when they pass by vain sport they pass it by with dignity: who say, “O our Lord, grant us of our wives and children such as shall be a comfort unto us, and make us examples unto the pious,” these shall be the rewarded, for that they persevered; and they shall be accosted in Paradise with welcome and salutation. For ever therein,—a fair abode and resting-place!’ ‘Adhere to those who forsake you; speak truth to your own heart; do good to every one that does ill to you!’\n\nFoulness is forbidden: ‘Truly my Lord hath forbidden filthy actions, whether open or secret and iniquity and violence’; ‘Commit not adultery, for it is a foul thing and an evil way’; ‘Let the believer restrain his eyes from lust.’\n\nQuarrelsomeness and public and private disturbance are prohibited. ‘And commit not disorders on the well-ordered earth.’\n\nCharity is not left to individual discretion, it is made part of the legal prescriptions. Every man possessed of income has to contribute a certain proportion of his wealth at the end of the year for the keep of the poor and the distressed."
+      }
+    ]
+  },
+  {
+    "id": "romans9-attribution",
+    "question": "How do Schreiner and Abasciano disagree about election in Romans 9, and does Hagopian endorse a side? Preserve each author’s position and cite sources.",
+    "evidence": [
+      {
+        "id": "dossier-romans-9-election-schreiner-schreiner-1993",
+        "sourceId": "schreiner-1993",
+        "title": "Does Romans 9 Teach Individual Election unto Salvation? Some Exegetical and Theological Reflections",
+        "author": "Thomas R. Schreiner",
+        "tradition": "Christianity",
+        "perspective": "Reformed reading",
+        "sourceUrl": "https://etsjets.org/wp-content/uploads/2010/07/files_JETS-PDFs_36_36-1_JETS_36-1_025-040_Schreiner.pdf",
+        "license": "Editorial summary; original article rights retained",
+        "locator": "Romans 9: election and the people of God · pp. 33–40, especially conclusion p. 40",
+        "text": "Romans 9: election and the people of God. Individual election with a corporate dimension. He appeals to singular references, the remnant, and the salvation context to resist an exclusively corporate reading. Attribution role: author endorses.",
+        "editorial": true,
+        "citation": "[S1]",
+        "excerpt": "Romans 9: election and the people of God. Individual election with a corporate dimension. He appeals to singular references, the remnant, and the salvation context to resist an exclusively corporate reading. Attribution role: author endorses."
+      },
+      {
+        "id": "dossier-romans-9-election-abasciano-abasciano-2006",
+        "sourceId": "abasciano-2006",
+        "title": "Corporate Election in Romans 9: A Reply to Thomas Schreiner",
+        "author": "Brian J. Abasciano",
+        "tradition": "Christianity",
+        "perspective": "Arminian corporate reading",
+        "sourceUrl": "https://etsjets.org/wp-content/uploads/2010/06/files_JETS-PDFs_49_49-2_JETS_49-2_351-371_Abasciano.pdf",
+        "license": "Editorial summary; original article rights retained",
+        "locator": "Romans 9: election and the people of God · pp. 351–355; 369–371",
+        "text": "Romans 9: election and the people of God. Abasciano makes the covenant community and its representative primary. Individuals share its election through membership by faith. He explicitly distinguishes this from unconditional selection of individuals; acknowledging persons does not concede Schreiner's position. He agrees that salvation is in view, but reads Isaac and Jacob through their representative roles and the national settings of Genesis 25 and Malachi 1. Attribution role: author endorses.",
+        "editorial": true,
+        "citation": "[S2]",
+        "excerpt": "Romans 9: election and the people of God. Abasciano makes the covenant community and its representative primary. Individuals share its election through membership by faith. He explicitly distinguishes this from unconditional selection of individuals; acknowledging persons does not concede Schreiner's position. He agrees that salvation is in view, but reads Isaac and Jacob through their representative roles and the national settings of Genesis 25 and Malachi 1. Attribution role: author endorses."
+      },
+      {
+        "id": "dossier-romans-9-election-hagopian-hagopian-2005",
+        "sourceId": "hagopian-2005",
+        "title": "“To be Right with God”: An Exploration of the New Perspective View on Paul",
+        "author": "Rich Hagopian",
+        "tradition": "Christianity",
+        "perspective": "Survey of Pauline scholarship",
+        "sourceUrl": "https://www.galaxie.com/article/atj37-1-03",
+        "license": "Editorial summary; original article rights retained",
+        "locator": "Romans 9: election and the people of God · p. 19, introduction",
+        "text": "Romans 9: election and the people of God. Hagopian states that his purpose is to survey viewpoints within the New Perspective. His report of Sanders, Dunn, or Wright should not be converted into an endorsement of corporate priority, or treated as a direct resolution of Romans 9. The introduction describes a range of positions rather than a single New Perspective school. Only this introductory scope is checked here. Attribution role: author surveys other scholars.",
+        "editorial": true,
+        "citation": "[S3]",
+        "excerpt": "Romans 9: election and the people of God. Hagopian states that his purpose is to survey viewpoints within the New Perspective. His report of Sanders, Dunn, or Wright should not be converted into an endorsement of corporate priority, or treated as a direct resolution of Romans 9. The introduction describes a range of positions rather than a single New Perspective school. Only this introductory scope is checked here. Attribution role: author surveys other scholars."
+      }
+    ]
+  },
+  {
+    "id": "missing-excavation",
+    "question": "Give the exact quotation from a 2025 excavation proving which site is Bethsaida.",
+    "evidence": [
+      {
+        "title": "Evidence coverage note",
+        "author": "Library coverage record",
+        "tradition": "Encyclopedia",
+        "locator": "Coverage",
+        "text": "No report from a 2025 Bethsaida excavation or quotation from such a report is present in the supplied evidence. The identification of ancient Bethsaida remains disputed between candidate sites.",
+        "citation": "[S1]",
+        "excerpt": "No report from a 2025 Bethsaida excavation or quotation from such a report is present in the supplied evidence. The identification of ancient Bethsaida remains disputed between candidate sites."
+      }
+    ]
+  },
+  {
+    "id": "election-in-christ",
+    "question": "Does “chosen in Christ” in Ephesians 1:3–14 establish only individual election, only corporate election, or leave room for interpretation? Distinguish the quoted wording from a theological inference.",
+    "evidence": [
+      {
+        "title": "Ephesians 1:3–14",
+        "author": "Biblical text",
+        "tradition": "Biblical texts",
+        "perspective": "BSB English translation",
+        "locator": "Ephesians 1:3–14",
+        "text": "3 Blessed be the God and Father of our Lord Jesus Christ, who has blessed us in Christ with every spiritual blessing in the heavenly realms. 4 For He chose us in Him before the foundation of the world to be holy and blameless in His presence. In love 5 He predestined us for adoption as His sons through Jesus Christ, according to the good pleasure of His will, 6 to the praise of His glorious grace, which He has freely given us in the Beloved One. 7 In Him we have redemption through His blood, the forgiveness of our trespasses, according to the riches of His grace 8 that He lavished on us with all wisdom and understanding. 9 And He has made known to us the mystery of His will according to His good pleasure, which He purposed in Christ 10 as a plan for the fullness of time, to bring all things in heaven and on earth together in Christ. 11 In Him we were also chosen as God’s own, having been predestined according to the plan of Him who works out everything by the counsel of His will, 12 in order that we, who were the first to hope in Christ, would be for the praise of His glory. 13 And in Him, having heard and believed the word of truth—the gospel of your salvation—you were sealed with the promised Holy Spirit, 14 who is the pledge of our inheritance until the redemption of those who are God’s possession, to the praise of His glory.",
+        "citation": "[S1]",
+        "excerpt": "3 Blessed be the God and Father of our Lord Jesus Christ, who has blessed us in Christ with every spiritual blessing in the heavenly realms. 4 For He chose us in Him before the foundation of the world to be holy and blameless in His presence. In love 5 He predestined us for adoption as His sons through Jesus Christ, according to the good pleasure of His will, 6 to the praise of His glorious grace, which He has freely given us in the Beloved One. 7 In Him we have redemption through His blood, the forgiveness of our trespasses, according to the riches of His grace 8 that He lavished on us with all wisdom and understanding. 9 And He has made known to us the mystery of His will according to His good pleasure, which He purposed in Christ 10 as a plan for the fullness of time, to bring all things in heaven and on earth together in Christ. 11 In Him we were also chosen as God’s own, having been predestined according to the plan of Him who works out everything by the counsel of His will, 12 in order that we, who were the first to hope in Christ, would be for the praise of His glory. 13 And in Him, having heard and believed the word of truth—the gospel of your salvation—you were sealed with the promised Holy Spirit, 14 who is the pledge of our inheritance until the redemption of those who are God’s possession, to the praise of His glory."
+      }
+    ]
+  }
+]

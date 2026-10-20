@@ -1,9 +1,12 @@
 .research-desk {
+  --timeline-width: 95px;
+  --timeline-gap: 18px;
+  --desk-padding: 30px;
   display: flex;
   flex-direction: column;
   gap: 18px;
-  padding: 22px 30px 10px;
-  max-width: 1760px;
+  padding: 22px var(--desk-padding) 10px calc(var(--desk-padding) + var(--timeline-width) + var(--timeline-gap));
+  max-width: calc(1760px + var(--timeline-width) + var(--timeline-gap));
   margin: 0 auto;
   min-height: 0;
   overflow: hidden;
@@ -37,18 +40,25 @@
 }
 .research-desk .desk-workspace {
   flex: 1;
+  min-width: 0;
   min-height: 0;
   display: grid;
   grid-template-rows: minmax(0, 1.65fr) minmax(0, 1fr);
   gap: 16px;
 }
 .research-desk .desk-upper {
-  display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  gap: 18px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
   min-height: 0;
 }
 .research-desk .question-timeline {
+  position: absolute;
+  inset-block: 0;
+  left: calc(-1 * (var(--timeline-width) + var(--timeline-gap)));
+  width: var(--timeline-width);
   min-width: 0;
   min-height: 0;
   display: flex;
@@ -85,10 +95,10 @@
 }
 .research-desk .timeline-scroll button {
   display: flex;
-  gap: 8px;
+  gap: 5px;
   width: 100%;
   border-radius: 6px;
-  padding: 9px 7px 9px 0;
+  padding: 9px 3px 9px 0;
   text-align: left;
   align-items: flex-start;
 }
@@ -117,7 +127,7 @@
   min-width: 0;
 }
 .research-desk .timeline-copy strong {
-  font-size: 11px;
+  font-size: 10px;
   line-height: 1.6;
   font-weight: 450;
   overflow-wrap: anywhere;
@@ -128,7 +138,7 @@
 }
 .research-desk .timeline-copy small {
   display: block;
-  font-size: 9px;
+  font-size: 8px;
   color: var(--muted);
   line-height: 1.6;
   margin-top: 5px;
@@ -145,6 +155,7 @@
   padding-top: 10px;
 }
 .research-desk .desk-conversation {
+  flex: 1;
   min-width: 0;
   min-height: 0;
   border: 1px solid var(--line);
@@ -243,6 +254,26 @@
   line-height: 1.85;
   margin-bottom: 12px;
 }
+.research-desk .grounded-passage {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+}
+.research-desk .grounded-passage blockquote {
+  margin: 10px 0;
+  padding-left: 14px;
+  border-left: 2px solid var(--line);
+  font: 400 14px/1.85 "Libre Baskerville", Georgia, serif;
+  white-space: pre-wrap;
+}
+.research-desk .grounded-passage .evidence-meta,
+.research-desk .grounded-passage .grounded-role {
+  font-size: 10px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 5px 0;
+}
+.research-desk .grounded-passage .text-button { font-size: 10px; }
 .research-desk .citation-link {
   display: inline;
   color: var(--gold);
@@ -267,63 +298,136 @@
 .research-desk .attribution-audit p {
   margin-top: 10px;
 }
-.research-desk .conversation-empty {
-  max-width: 520px;
-  margin: 18px auto;
-  color: var(--muted);
-}
-.research-desk .conversation-empty > svg {
-  color: var(--gold);
-}
-.research-desk .conversation-empty h2 {
-  font: 400 21px/1.6 "Libre Baskerville", Georgia, serif;
-  color: var(--ink);
-  margin: 16px 0 10px;
-}
-.research-desk .conversation-empty p {
-  font-size: 13px;
-  line-height: 1.9;
-}
 .research-desk .desk-composer {
+  position: relative;
   flex: 0 0 auto;
-  border-top: 1px solid var(--line);
-  background: var(--paper);
-  padding: 13px 18px 10px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
-.research-desk .desk-composer label {
-  display: block;
-  font-size: 10px;
-  color: var(--muted);
-  margin-bottom: 6px;
+.research-desk .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 .research-desk .composer-row {
   display: flex;
-  align-items: flex-end;
-  gap: 14px;
+  align-items: center;
+  gap: 9px;
+  min-height: 62px;
+  padding: 10px 12px 10px 20px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--white);
+  box-shadow: 0 2px 8px #00000005;
+}
+body[data-theme="dark"] .research-desk .composer-row {
+  background: #303931;
+  border-color: #465044;
+  box-shadow: none;
 }
 .research-desk .composer-row textarea {
   min-width: 0;
   flex: 1;
   resize: none;
-  height: 44px;
-  max-height: 44px;
+  height: 30px;
+  max-height: 30px;
   border: 0;
-  padding: 2px 0;
+  padding: 4px 0;
   background: transparent;
   color: var(--ink);
-  font: 400 13px/1.6 Inter, sans-serif;
+  font: 400 14px/1.55 "DM Sans", sans-serif;
   overflow-y: auto;
+  scrollbar-width: thin;
 }
-.research-desk .composer-row .primary-button {
-  padding: 10px 13px;
-  font-size: 11px;
-  flex-shrink: 0;
+.research-desk .composer-row textarea::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.research-desk .composer-row textarea:focus-visible {
+  outline: none;
+}
+.research-desk .composer-row:focus-within {
+  border-color: var(--gold);
+}
+.research-desk .composer-microphone,
+.research-desk .composer-send {
+  display: grid;
+  place-items: center;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border-radius: 10px;
+}
+.research-desk .composer-microphone {
+  color: var(--ink);
+}
+.research-desk .composer-microphone:hover,
+.research-desk .composer-microphone.listening {
+  background: var(--green-light);
+}
+.research-desk .composer-microphone.listening {
+  color: var(--gold);
+  box-shadow: inset 0 0 0 1px var(--gold);
+}
+.research-desk .composer-send {
+  color: var(--paper);
+  background: var(--ink);
+}
+.research-desk .composer-send:disabled {
+  opacity: .35;
+}
+.research-desk .composer-send svg {
+  width: 18px;
+  height: 18px;
 }
 .research-desk .composer-status {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 10px;
   line-height: 1.5;
-  margin: 7px 0 0;
+  margin: 6px 8px 0;
+}
+.research-desk .desk-composer > .error-note {
+  margin: 6px 8px 0;
+  font-size: 11px;
+}
+.research-desk .voice-consent {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  z-index: 8;
+  width: min(410px, 100%);
+  max-height: min(260px, 45vh);
+  overflow-y: auto;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--paper);
+  box-shadow: 0 6px 30px #0002;
+}
+.research-desk .voice-consent p {
+  font-size: 12px;
+  line-height: 1.75;
+  margin-bottom: 14px;
+}
+.research-desk .voice-consent-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.research-desk .voice-consent-actions button {
+  font-size: 11px;
+  padding: 8px 11px;
 }
 .research-desk .desk-references {
   display: flex;
@@ -456,36 +560,38 @@
   grid-row: auto;
 }
 @media (max-width: 1200px) {
-  .research-desk { padding: 18px 22px 10px; gap: 14px; }
-  .research-desk .desk-upper { grid-template-columns: 150px minmax(0, 1fr); gap: 14px; }
+  .research-desk { --timeline-width: 75px; --timeline-gap: 14px; --desk-padding: 22px; padding-top: 18px; gap: 14px; }
+  .research-desk .question-timeline h2 { font-size: 10px; padding-inline: 2px; }
+  .research-desk .question-timeline h2 span { margin-left: 3px; }
   .research-desk .conversation-scroll { padding: 18px 20px; }
   .research-desk .advanced-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 650px) {
-  .research-desk { padding: 14px 12px 5px; gap: 10px; }
+  .research-desk { --timeline-width: 43px; --timeline-gap: 8px; --desk-padding: 12px; padding-top: 14px; padding-bottom: 5px; gap: 10px; }
   .research-desk .desk-heading { gap: 8px; }
   .research-desk .desk-heading h1 { font-size: 21px; letter-spacing: -.5px; }
   .research-desk .desk-tabs button { font-size: 10px; padding: 8px; }
   .research-desk .desk-workspace { gap: 10px; grid-template-rows: minmax(0, 1.8fr) minmax(0, 1fr); }
-  .research-desk .desk-upper { grid-template-columns: 85px minmax(0, 1fr); gap: 8px; }
-  .research-desk .question-timeline h2 { padding: 7px 2px 9px; font-size: 10px; }
+  .research-desk .question-timeline h2 { padding: 7px 0 9px; font-size: 8px; }
   .research-desk .question-timeline h2 span { display: none; }
-  .research-desk .timeline-copy strong { font-size: 10px; -webkit-line-clamp: 3; }
-  .research-desk .timeline-copy small { font-size: 8px; }
-  .research-desk .timeline-scroll button { gap: 5px; padding-right: 3px; }
-  .research-desk .timeline-number { width: 17px; height: 17px; font-size: 8px; line-height: 15px; margin-left: -9px; }
-  .research-desk .timeline-foot { font-size: 8px; padding-left: 2px; }
+  .research-desk .timeline-copy { display: none; }
+  .research-desk .timeline-scroll { padding: 3px 0; }
+  .research-desk .timeline-scroll ol { margin-left: 15px; }
+  .research-desk .timeline-scroll button { gap: 0; padding: 8px 0; }
+  .research-desk .timeline-number { width: 26px; height: 26px; font-size: 9px; line-height: 24px; margin-left: -13px; }
+  .research-desk .timeline-foot { font-size: 8px; padding-left: 0; }
+  .research-desk .timeline-empty { display: none; }
   .research-desk .conversation-scroll { padding: 13px; }
   .research-desk .conversation-question { padding-bottom: 12px; }
   .research-desk .conversation-question h2 { font-size: 15px; line-height: 1.7; }
   .research-desk .conversation-speaker small { display: block; margin: 5px 0 0; }
   .research-desk .research-answer p, .research-desk .conversation-response > p { font-size: 12px; }
   .research-desk .research-answer h3 { font-size: 15px; }
-  .research-desk .desk-composer { padding: 10px; }
-  .research-desk .composer-row { flex-wrap: wrap; gap: 5px; }
-  .research-desk .composer-row textarea { flex-basis: 100%; font-size: 16px; height: 40px; max-height: 40px; }
-  .research-desk .composer-row .primary-button { margin-left: auto; padding: 8px 10px; }
-  .research-desk .composer-status { font-size: 8px; }
+  .research-desk .desk-upper { gap: 9px; }
+  .research-desk .composer-row { gap: 4px; min-height: 56px; padding: 9px 8px 9px 13px; border-radius: 15px; }
+  .research-desk .composer-row textarea { font-size: 16px; height: 34px; max-height: 34px; }
+  .research-desk .composer-microphone, .research-desk .composer-send { flex-basis: 30px; width: 30px; height: 32px; border-radius: 9px; }
+  .research-desk .composer-status { font-size: 9px; }
   .research-desk .references-heading { padding: 10px 13px; gap: 7px; }
   .research-desk .reference-options { gap: 8px; font-size: 9px; }
   .research-desk .reference-count { display: none; }
@@ -497,9 +603,7 @@
   .research-desk { padding-top: 9px; gap: 9px; }
   .research-desk .desk-heading h1 { font-size: 20px; }
   .research-desk .desk-workspace { gap: 8px; grid-template-rows: minmax(0, 2fr) minmax(0, 1fr); }
-  .research-desk .desk-composer { padding-top: 7px; padding-bottom: 6px; }
-  .research-desk .composer-row { flex-wrap: nowrap; }
-  .research-desk .composer-row textarea { flex-basis: auto; height: 35px; max-height: 35px; }
-  .research-desk .composer-status { display: none; }
+  .research-desk .desk-upper { gap: 8px; }
+  .research-desk .composer-row { min-height: 48px; padding-block: 6px; }
   .research-desk .references-heading { padding-top: 8px; padding-bottom: 8px; }
 }

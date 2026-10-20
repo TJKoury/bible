@@ -305,6 +305,9 @@ kbd {
   height: 12px;
   margin-left: auto;
 }
+.sidebar-footer { margin-top: auto; flex-shrink: 0; }
+.sidebar-footer .sidebar-foot { margin-top: 0; width: 100%; padding: 12px 3px; text-decoration: none; }
+.sidebar-footer .sidebar-foot + .sidebar-foot { border-top: 0; padding-top: 0; }
 .source-dot {
   width: 5px;
   height: 5px;

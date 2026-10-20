@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Local AI evaluation</title>
+<style>
+body{font:15px/1.5 system-ui;margin:32px auto;max-width:1100px;padding:0 24px;background:#f7f6f2;color:#26342b}
+button,select{font:inherit;padding:8px;margin:4px;border:1px solid #a3ada4;border-radius:5px}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;background:white;border:1px solid #ddd;padding:16px}
+article{margin-block:24px} h2{font-size:18px} progress{width:100%}
+</style>
+<h1>Local AI evaluation</h1>
+<p>Development tool. Prompts, source packets, and actual browser outputs are shown below. Questions stay on this device.</p>
+<label>Model <select id="model"></select></label>
+<label>Prompt <select id="prompt"><option value="current">Current app prompt</option><option value="brief">Short evidence prompt</option><option value="grounded">Source selection</option></select></label>
+<button id="load">Load model</button><button id="run" disabled>Run evaluation</button><button id="stop" disabled>Stop</button>
+<p id="status" role="status">Ready.</p>
+<pre id="device"></pre>
+<div id="results"></div>
+<script type="module" src="./ai-eval.js"></script>
+</html>
