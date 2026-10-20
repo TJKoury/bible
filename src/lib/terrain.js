@@ -6,10 +6,13 @@ export function terrariumHeight(red, green, blue) {
 export function sampleTerrarium(pixels, width, height, size = 65, region = [0,0,1,1]) {
   const result = new Float32Array(size * size);
   for (let y=0;y<size;y++) for (let x=0;x<size;x++) {
-    const u = Math.max(0,Math.min(width-1,Math.round((region[0]+x/(size-1)*region[2])*(width-1))));
-    const v = Math.max(0,Math.min(height-1,Math.round((region[1]+y/(size-1)*region[3])*(height-1))));
-    const i = (v*width+u)*4;
-    result[y*size+x] = terrariumHeight(pixels[i],pixels[i+1],pixels[i+2]);
+    const u = Math.max(0,Math.min(width-1,(region[0]+x/(size-1)*region[2])*(width-1)));
+    const v = Math.max(0,Math.min(height-1,(region[1]+y/(size-1)*region[3])*(height-1)));
+    const x0=Math.floor(u),y0=Math.floor(v),x1=Math.min(x0+1,width-1),y1=Math.min(y0+1,height-1);
+    const read=(px,py)=>{const i=(py*width+px)*4;return terrariumHeight(pixels[i],pixels[i+1],pixels[i+2]);};
+    const top=read(x0,y0)*(1-(u-x0))+read(x1,y0)*(u-x0);
+    const bottom=read(x0,y1)*(1-(u-x0))+read(x1,y1)*(u-x0);
+    result[y*size+x] = top*(1-(v-y0))+bottom*(v-y0);
   }
   return result;
 }

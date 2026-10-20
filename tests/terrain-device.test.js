@@ -10,6 +10,7 @@ test('Terrarium decoding preserves below-sea-level heights and fractional metres
   assert.equal(terrariumHeight(128,100,128),100.5);
   const rgba=new Uint8ClampedArray([128,0,0,255,128,10,0,255,127,47,0,255,128,100,128,255]);
   assert.deepEqual([...sampleTerrarium(rgba,2,2,2)],[0,10,-209,100.5]);
+  assert.equal(sampleTerrarium(rgba,2,2,3)[4],(0+10-209+100.5)/4);
   assert.deepEqual([...sampleTerrarium(rgba,2,2,2,[1,1,0,0])],[100.5,100.5,100.5,100.5]);
 });
 test('model downloads require device checks, GPU features, and sufficient reported capacity',()=>{
