@@ -1,0 +1,184 @@
+.theme-toggle { border: 1px solid var(--line); flex-shrink: 0; }
+.entity-links { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 20px 0 10px; padding: 4px 0 10px; }
+.entity-links .section-label { font-size: 8px; margin: 12px 0; }
+.entity-links > button { display: flex; gap: 9px; align-items: center; width: 100%; text-align: left; padding: 8px 0; font-size: 12px; color: var(--green); }
+.entity-links > button svg:last-child { margin-left: auto; width: 15px; }
+.study-research-button { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-radius: 5px; background: var(--green-light); color: var(--green); width: 100%; font-size: 11px; margin: 16px 0; }
+.study-research-button svg { width: 16px; }
+.explore-view { padding: 48px 44px; max-width: 1740px; margin: 0 auto; }
+.explore-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 34px; }
+.explore-heading h1 { font: 400 clamp(27px, 2.4vw, 42px)/1.45 "Libre Baskerville", Georgia, serif; letter-spacing: -1.3px; margin: 10px 0 12px; }
+.explore-heading p:last-child { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 0; }
+.outline-badge { display: inline-flex; gap: 7px; align-items: center; border: 1px solid var(--line); border-radius: 5px; padding: 7px 10px; font-size: 10px; color: var(--muted); white-space: nowrap; }
+.outline-badge svg { width: 15px; height: 15px; }
+.explore-heading > .outline-badge { margin-top: 13px; }
+.primary-button { background: var(--green); color: var(--paper); padding: 11px 16px; border-radius: 5px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
+.primary-button:hover:not(:disabled) { filter: brightness(1.12); }
+.primary-button svg { width: 16px; }
+.inline-actions { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.field-search { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line); border-radius: 5px; background: var(--white); padding: 10px 12px; }
+.field-search input { border: 0; background: transparent; color: var(--ink); font-size: 12px; width: 100%; min-width: 0; outline-offset: 6px; }
+.field-search svg { color: var(--muted); width: 16px; }
+.context-toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; padding: 18px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-bottom: 24px; }
+.context-toolbar label { display: flex; flex-direction: column; gap: 5px; font-size: 10px; color: var(--muted); }
+.context-toolbar select, .model-card select { border: 1px solid var(--line); background: var(--white); color: var(--ink); padding: 9px 28px 9px 10px; border-radius: 4px; font-size: 12px; max-width: 100%; }
+.context-toolbar .map-mode { margin-left: auto; }
+.atlas-layout { display: grid; grid-template-columns: minmax(0, 1fr) 275px; gap: 28px; }
+.atlas-main { min-width: 0; }
+.map-frame { position: relative; height: clamp(360px, 54vh, 670px); background: var(--green-light); border: 1px solid var(--line); border-radius: 9px; overflow: hidden; }
+.map-canvas { width: 100%; height: 100%; }
+.map-notice { position: absolute; top: 45%; left: 15%; right: 15%; background: var(--paper); padding: 20px; border: 1px solid var(--line); border-radius: 8px; line-height: 1.7; font-size: 13px; text-align: center; }
+.map-fit { position: absolute; left: 14px; top: 14px; display: flex; align-items: center; gap: 8px; padding: 10px; border-radius: 5px; background: var(--paper); box-shadow: 0 2px 12px #0002; font-size: 11px; }
+.map-fit svg { width: 15px; }
+.map-legend { position: absolute; left: 12px; bottom: 33px; display: flex; flex-wrap: wrap; gap: 15px; font-size: 9px; background: var(--paper); color: var(--ink); padding: 8px 10px; border-radius: 4px; pointer-events: none; max-width: calc(100% - 24px); }
+.tile-notice { position: absolute; top: 65px; left: 15px; right: 55px; padding: 12px; background: var(--paper); font-size: 11px; line-height: 1.6; }
+.tile-notice button { text-decoration: underline; }
+.atlas-pin { display: flex; align-items: center; justify-content: center; height: 26px; width: 26px; border-radius: 50%; background: #425746; border: 2px solid #fffdf3; color: #fffdf3; box-shadow: 0 2px 7px #0005; font-size: 17px; padding: 0; }
+.atlas-pin.candidate { border-radius: 6px; background: #967648; }
+.atlas-pin.chosen { outline: 3px solid #e7b865; }
+.maplibregl-ctrl-attrib { color: #334239; }
+.map-frame + .source-caption { margin: 13px 2px 25px; line-height: 1.7; }
+.atlas-places .section-label { margin-top: 0; }
+.atlas-places .text-button { font-size: 11px; margin: 12px 0; }
+.place-row { display: flex; gap: 12px; align-items: flex-start; width: 100%; text-align: left; padding: 17px 10px; border-bottom: 1px solid var(--line); }
+.place-row.active { background: var(--green-light); border-radius: 5px; }
+.place-row > svg { margin-top: 3px; color: var(--gold); }
+.place-row > svg:last-child { margin-left: auto; width: 13px; color: var(--muted); }
+.place-row strong { font-family: "Libre Baskerville",Georgia,serif; font-size: 14px; font-weight: 400; }
+.place-row small { display: block; color: var(--muted); font-size: 10px; line-height: 1.7; margin-top: 4px; }
+.atlas-detail { border: 1px solid var(--line); padding: 26px; border-radius: 8px; }
+.atlas-detail h2, .encyclopedia-welcome h2 { font: 400 26px/1.5 "Libre Baskerville",Georgia,serif; }
+.atlas-detail > p { font-size: 13px; line-height: 1.9; color: var(--muted); }
+.candidate-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 15px; margin: 24px 0; }
+.candidate-card { background: var(--panel); padding: 18px; border-radius: 6px; border: 1px solid var(--line); }
+.candidate-card h3 { margin: 15px 0 8px; font-size: 15px; }
+.candidate-card p { color: var(--muted); font-size: 11px; line-height: 1.8; }
+.candidate-card code { font-size: 10px; }
+.encyclopedia-layout { display: grid; grid-template-columns: 255px minmax(0,1fr); gap: 44px; border-top: 1px solid var(--line); padding-top: 26px; }
+.encyclopedia-directory { align-self: start; position: sticky; top: 105px; }
+.encyclopedia-directory .segmented { margin: 14px 0; width: 100%; }
+.encyclopedia-directory .segmented button { flex: 1; padding: 8px 5px; font-size: 10px; }
+.article-list { max-height: 60vh; overflow-y: auto; scrollbar-width: thin; }
+.article-list > button { text-align: left; padding: 13px 10px; display: grid; width: 100%; grid-template-columns: 1fr 16px; border-bottom: 1px solid var(--line); gap: 4px; }
+.article-list > button.active { background: var(--green-light); border-radius: 5px; }
+.article-list strong { font-size: 12px; font-weight: 500; grid-column: 1; }
+.article-list small { grid-column: 1; font-size: 9px; color: var(--muted); text-transform: capitalize; }
+.article-list svg { grid-column: 2; grid-row: 1 / span 2; width: 14px; align-self: center; }
+.encyclopedia-reader { min-width: 0; max-width: 1000px; }
+.article-header h2 { font: 400 40px/1.4 "Libre Baskerville",Georgia,serif; letter-spacing: -1px; margin-bottom: 14px; }
+.article-provenance { display: flex; gap: 18px; flex-wrap: wrap; color: var(--muted); font-size: 10px; margin-bottom: 26px; }
+.article-lead { font: 400 16px/1.9 "Libre Baskerville",Georgia,serif; }
+.article-tabs { display: flex; gap: 23px; border-bottom: 1px solid var(--line); overflow-x: auto; margin: 25px 0; scrollbar-width: thin; }
+.article-tabs button { padding: 12px 0; white-space: nowrap; font-size: 11px; color: var(--muted); border-bottom: 2px solid transparent; }
+.article-tabs button.active { border-color: var(--green); color: var(--green); }
+.article-section { padding: 16px 0; }
+.article-section h3, .evidence-note h3 { font: 400 20px/1.6 "Libre Baskerville",Georgia,serif; margin-bottom: 14px; }
+.article-section p { font-size: 14px; line-height: 1.95; white-space: pre-line; overflow-wrap: anywhere; }
+.article-section > a, .evidence-note > a { font-size: 11px; color: var(--green); }
+.article-section details { font-size: 11px; color: var(--muted); }
+.reference-links { display: flex; flex-direction: column; gap: 14px; padding: 16px 0; font-size: 12px; line-height: 1.7; overflow-wrap: anywhere; }
+.evidence-note { border-left: 2px solid var(--gold); background: var(--panel); padding: 23px; margin: 18px 0; }
+.evidence-note .outline-badge { margin-bottom: 15px; }
+.evidence-note p { font-size: 13px; line-height: 1.9; }
+.article-footer { margin-top: 25px; border-top: 1px solid var(--line); padding-top: 25px; }
+.article-footer p { color: var(--muted); font-size: 10px; line-height: 1.9; margin: 18px 0 0; }
+.encyclopedia-reader .inline-actions + .map-frame { margin-top: 20px; }
+.encyclopedia-welcome { text-align: center; padding: 65px 45px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; }
+.large-symbol { display: block; font-size: 38px; color: var(--gold); margin-bottom: 28px; }
+.encyclopedia-welcome p { font-size: 13px; line-height: 1.9; max-width: 470px; margin: 0 auto 20px; color: var(--muted); }
+.suggested-topics { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 27px 0; }
+.suggested-topics button { border: 1px solid var(--line); padding: 11px 12px; border-radius: 5px; font-size: 11px; background: var(--paper); display: flex; align-items: center; gap: 15px; }
+.research-layout { display: grid; grid-template-columns: minmax(0,1fr) 290px; gap: 40px; }
+.research-main { min-width: 0; }
+.question-box { border: 1px solid var(--line); border-radius: 10px; background: var(--white); padding: 22px; box-shadow: 0 4px 20px #28332604; }
+.question-box label { display: block; font-size: 11px; color: var(--muted); margin-bottom: 15px; }
+.question-box textarea { border: 0; resize: vertical; width: 100%; background: transparent; color: var(--ink); font: 400 19px/1.7 "Libre Baskerville",Georgia,serif; min-height: 100px; padding: 5px 0; }
+.question-box textarea::placeholder { color: var(--muted); opacity: .65; }
+.question-footer { border-top: 1px solid var(--line); padding-top: 16px; display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-top: 12px; }
+.question-footer > span { color: var(--muted); font-size: 10px; display: flex; align-items: center; gap: 7px; }
+.question-footer > span svg { width: 14px; }
+.tradition-filters { display: flex; flex-wrap: wrap; gap: 7px; padding: 17px 0 2px; }
+.tradition-filters button { padding: 7px 9px; border: 1px solid var(--line); color: var(--muted); border-radius: 4px; font-size: 10px; }
+.tradition-filters button.active { background: var(--green-light); border-color: var(--green-light); color: var(--green); }
+.research-status { font-size: 10px; color: var(--muted); margin: 19px 0 28px; }
+.question-suggestions { padding: 8px 0 20px; }
+.question-suggestions > button { display: flex; width: 100%; gap: 16px; text-align: left; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 13px; line-height: 1.6; }
+.question-suggestions > button svg { margin-left: auto; width: 15px; color: var(--gold); }
+.research-principles { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 25px; margin-top: 25px; }
+.research-principles span { color: var(--gold); font-family: Georgia,serif; font-size: 26px; }
+.research-principles h3 { font-size: 12px; margin: 17px 0 10px; font-weight: 500; }
+.research-principles p { font-size: 11px; line-height: 1.9; color: var(--muted); }
+.research-sidebar { min-width: 0; }
+.model-card, .corpus-card { padding: 23px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; margin-bottom: 22px; }
+.model-card .section-label { margin: 0 0 20px; justify-content: flex-start; gap: 8px; font-size: 8px; }
+.model-card .section-label svg { width: 16px; }
+.model-card h2 { font: 400 23px/1.5 "Libre Baskerville",Georgia,serif; margin-bottom: 14px; }
+.model-card > p, .corpus-card > p { color: var(--muted); font-size: 11px; line-height: 1.9; }
+.model-card label { display: block; font-size: 10px; margin: 22px 0 7px; }
+.model-card select { width: 100%; }
+.model-card > .primary-button { width: 100%; margin: 7px 0 13px; }
+.model-card details { border-top: 1px solid var(--line); padding-top: 15px; margin-top: 15px; color: var(--muted); font-size: 10px; line-height: 1.9; }
+summary { cursor: pointer; }
+.model-card details p { margin-top: 12px; }
+.model-card .text-button { display: block; font-size: 10px; text-align: left; margin-top: 15px; }
+.model-card progress { width: 100%; accent-color: var(--green); margin-top: 15px; height: 6px; }
+.model-ready { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--green); margin: 15px 0; }
+.corpus-card { background: transparent; }
+.corpus-card h3 { font: 400 18px/1.6 "Libre Baskerville",Georgia,serif; }
+.corpus-card .subtle-button { font-size: 10px; line-height: 1.8; }
+.source-inventory { max-height: 420px; overflow-y: auto; margin: 18px 0; }
+.source-inventory > div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+.source-inventory a { font-size: 11px; }
+.source-inventory p { font-size: 9px; line-height: 1.8; color: var(--muted); margin: 8px 0 0; }
+.research-result-heading { display: flex; align-items: flex-start; gap: 25px; justify-content: space-between; margin: 30px 0; }
+.research-result-heading h2 { font: 400 25px/1.6 "Libre Baskerville",Georgia,serif; margin-bottom: 0; }
+.research-result-heading .inline-actions { flex-shrink: 0; gap: 12px; }
+.research-result-heading .subtle-button { font-size: 10px; }
+.coverage-note { display: flex; gap: 14px; border-left: 2px solid var(--gold); background: var(--panel); padding: 18px; }
+.coverage-note > svg { color: var(--gold); }
+.coverage-note strong { font-size: 11px; }
+.coverage-note p { font-size: 11px; line-height: 1.9; color: var(--muted); margin: 7px 0 0; }
+.answer-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; padding: 24px 0 12px; }
+.answer-toolbar > span { font-size: 10px; color: var(--muted); }
+.research-answer { background: var(--white); border: 1px solid var(--line); padding: 28px; border-radius: 8px; margin: 25px 0; overflow-wrap: anywhere; }
+.research-answer .section-label { margin: 0 0 25px; font-size: 8px; }
+.research-answer h3 { font: 400 19px/1.5 "Libre Baskerville",Georgia,serif; margin: 25px 0 15px; }
+.research-answer p { font-size: 13px; line-height: 1.9; }
+.research-answer a { color: var(--gold); font-size: 11px; font-weight: 600; }
+.research-answer .invalid-citation { color: #be6b53; text-decoration: wavy underline; }
+.attribution-audit { border: 1px solid var(--line); border-radius: 8px; padding: 22px; margin-bottom: 30px; }
+.attribution-audit h3 { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.attribution-audit p, .attribution-audit li { font-size: 11px; line-height: 1.8; color: var(--muted); }
+.attribution-audit ul { padding-left: 16px; margin-bottom: 0; }
+.evidence-card { border-top: 1px solid var(--line); padding: 25px 0; scroll-margin-top: 105px; }
+.evidence-heading { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 13px; }
+.evidence-heading label { display: flex; gap: 7px; align-items: center; font-size: 11px; color: var(--gold); cursor: pointer; }
+.evidence-heading input { accent-color: var(--green); margin: 0; }
+.tradition-badge { background: var(--green-light); color: var(--green); border-radius: 3px; padding: 5px 8px; font-size: 9px; }
+.evidence-card h3 { font: 400 18px/1.7 "Libre Baskerville",Georgia,serif; margin-bottom: 6px; }
+.evidence-meta { font-size: 10px; color: var(--muted); line-height: 1.8; }
+.evidence-card blockquote { font-size: 13px; line-height: 1.9; margin: 16px 0; padding-left: 18px; border-left: 2px solid var(--line); white-space: pre-line; }
+.evidence-card .subtle-button { font-size: 10px; }
+.evidence-card details { font-size: 10px; color: var(--muted); }
+.full-evidence { font-size: 12px; line-height: 1.9; color: var(--ink); white-space: pre-line; }
+.dossier-note { margin-top: 30px; background: var(--panel); padding: 25px; border: 1px solid var(--line); border-radius: 7px; font-size: 12px; }
+.dossier-note pre { white-space: pre-wrap; overflow-wrap: anywhere; font: 11px/1.8 monospace; }
+.dossier-note h2 { font: 400 24px/1.6 "Libre Baskerville",Georgia,serif; }
+.dossier-note h3 { font: 400 17px/1.7 "Libre Baskerville",Georgia,serif; margin: 25px 0 12px; }
+.dossier-note p { font-size: 12px; line-height: 1.9; }
+.dossier-position { padding: 20px 0; border-bottom: 1px solid var(--line); }
+.dossier-position h3 { margin-top: 12px; }
+.dossier-evidence { border-left: 2px solid var(--line); padding-left: 16px; margin: 18px 0; font-size: 11px; line-height: 1.8; }
+.dossier-evidence small { display: block; color: var(--muted); font-size: 9px; }
+.dossier-evidence a { display: block; margin-top: 5px; color: var(--green); font-size: 10px; }
+body[data-theme="dark"] { color-scheme: dark; background: var(--paper); color: var(--ink); }
+@media (min-width:1800px) { .explore-view { padding-top: 60px; } .research-layout { grid-template-columns: minmax(0,1fr) 330px; gap: 65px; } }
+@media (max-width:1200px) { .explore-view { padding: 32px 26px; } .research-layout { grid-template-columns: minmax(0,1fr) 250px; gap: 24px; } .encyclopedia-layout { grid-template-columns: 210px minmax(0,1fr); gap: 28px; } .atlas-layout { grid-template-columns: minmax(0,1fr) 230px; gap: 20px; } .outline-badge { white-space: normal; } .research-result-heading { flex-direction: column; gap: 14px; } }
+@media (max-width:1000px) { .research-layout { grid-template-columns: 1fr; } .research-sidebar { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; } .model-card { grid-row: span 2; } .corpus-card { margin: 0; } .atlas-layout { grid-template-columns: 1fr; } .atlas-places { display: block; } .place-row { display: inline-flex; width: 50%; } .encyclopedia-layout { grid-template-columns: 180px minmax(0,1fr); gap: 22px; } .encyclopedia-welcome { padding: 35px 20px; } .explore-heading > .outline-badge { display: none; } }
+@media (max-width:650px) {
+  .topbar { gap: 12px; } .topbar .theme-toggle { width: 30px; height: 30px; } .topbar .brand { margin-right: auto; } .topbar .search-trigger { margin-left: 0; }
+  .explore-view { padding: 27px 18px; } .explore-heading { margin-bottom: 25px; } .explore-heading h1 { font-size: 27px; letter-spacing: -.8px; line-height: 1.5; } .explore-heading .eyebrow { font-size: 8px; } .explore-heading p:last-child { font-size: 12px; }
+  .context-toolbar { gap: 12px; } .context-toolbar .segmented { flex: 1; } .context-toolbar .segmented button { font-size: 10px; padding: 8px; flex: 1; } .context-toolbar .map-mode { margin: 0; } .context-toolbar label { flex: 1; } .context-toolbar select { width: 100%; } .map-frame { height: 380px; } .map-legend { font-size: 8px; gap: 10px; bottom: 52px; } .maplibregl-ctrl-attrib { font-size: 9px; max-width: 290px; } .place-row { width: 100%; } .candidate-grid { grid-template-columns: 1fr; } .atlas-detail { padding: 20px; }
+  .encyclopedia-layout { grid-template-columns: 1fr; padding-top: 20px; gap: 26px; } .encyclopedia-directory { position: static; } .article-list { max-height: 180px; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 8px; } .encyclopedia-directory .source-caption { margin: 8px 0; } .article-header h2 { font-size: 31px; } .article-tabs { gap: 20px; margin: 22px 0 15px; } .article-lead { font-size: 14px; } .article-section p { font-size: 13px; }
+  .research-sidebar { grid-template-columns: 1fr; } .model-card { grid-row: auto; margin-bottom: 0; } .question-box { padding: 17px; } .question-box textarea { font-size: 16px; } .question-footer { gap: 8px; } .question-footer > span { font-size: 9px; } .question-footer .primary-button { padding: 10px; font-size: 11px; } .research-principles { gap: 17px; } .research-principles h3 { line-height: 1.6; } .research-answer { padding: 20px; } .research-answer .section-label { gap: 10px; flex-wrap: wrap; } .research-result-heading h2 { font-size: 23px; } .evidence-heading .outline-badge { font-size: 8px; padding: 5px; } .model-card, .corpus-card { padding: 21px; } .answer-toolbar .primary-button { font-size: 11px; } .dossier-note { padding: 18px; }
+}

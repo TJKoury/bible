@@ -1,0 +1,85 @@
+[
+  {
+    "id": "romans-9-election",
+    "question": "Does Romans 9 teach individual election or corporate election?",
+    "title": "Romans 9: election and the people of God",
+    "keywords": ["Romans 9", "election", "predestination", "corporate", "individual", "Israel", "Schreiner", "Abasciano"],
+    "passage": "45.9.1",
+    "status": "Source-linked comparative research note; not a consensus statement or model-generated verdict.",
+    "context": "Read Romans 9 with chapters 10–11. Paul discusses Israel, the promises, mercy, faith, and Gentile inclusion. The contested question is how the choice of a people relates to the salvation of persons. Neither a quotation of an opponent nor a survey of a school establishes the writer's endorsement.",
+    "conclusion": "The sources disagree about the relationship between corporate election and individual participation. Calling the answer simply 'both' can conceal this disagreement. A comparative answer should identify each author's claim, its textual argument, and the remaining point of dispute.",
+    "positions": [
+      {
+        "id": "schreiner",
+        "label": "Individual election with a corporate dimension",
+        "tradition": "Christianity",
+        "perspective": "Reformed reading",
+        "author": "Thomas R. Schreiner",
+        "summary": "Schreiner defends unconditional election of persons to salvation and also affirms a corporate dimension. He argues that choosing an actual people entails choosing its members. This is his conclusion, not merely a view surveyed.",
+        "evidence": [
+          {"sourceId": "schreiner-1993", "locator": "pp. 33–40, especially conclusion p. 40", "role": "author endorses", "claim": "He appeals to singular references, the remnant, and the salvation context to resist an exclusively corporate reading."},
+          {"sourceId": "schreiner-2006", "locator": "pp. 375–377", "role": "author endorses", "claim": "His reply accepts the language of corporate priority in principle, but rejects Abasciano's account of how individuals participate. The mechanism matters more than the slogan."}
+        ],
+        "textualFocus": ["Romans 9:6–18", "Romans 9:22–24", "Romans 9:30–10:21", "Romans 11:1–10"]
+      },
+      {
+        "id": "abasciano",
+        "label": "Corporate election with individual participation",
+        "tradition": "Christianity",
+        "perspective": "Arminian corporate reading",
+        "author": "Brian J. Abasciano",
+        "summary": "Abasciano makes the covenant community and its representative primary. Individuals share its election through membership by faith. He explicitly distinguishes this from unconditional selection of individuals; acknowledging persons does not concede Schreiner's position.",
+        "evidence": [
+          {"sourceId": "abasciano-2006", "locator": "pp. 351–355; 369–371", "role": "author endorses", "claim": "He agrees that salvation is in view, but reads Isaac and Jacob through their representative roles and the national settings of Genesis 25 and Malachi 1."}
+        ],
+        "textualFocus": ["Genesis 21:12", "Genesis 25:23", "Malachi 1:2–5", "Romans 9:6–13", "Romans 9:30–33"]
+      },
+      {
+        "id": "hagopian",
+        "label": "Survey of the New Perspective",
+        "tradition": "Christianity",
+        "perspective": "Survey of Pauline scholarship",
+        "author": "Rich Hagopian",
+        "summary": "Hagopian states that his purpose is to survey viewpoints within the New Perspective. His report of Sanders, Dunn, or Wright should not be converted into an endorsement of corporate priority, or treated as a direct resolution of Romans 9.",
+        "evidence": [
+          {"sourceId": "hagopian-2005", "locator": "p. 19, introduction", "role": "author surveys other scholars", "claim": "The introduction describes a range of positions rather than a single New Perspective school. Only this introductory scope is checked here."}
+        ],
+        "textualFocus": []
+      }
+    ],
+    "agreements": [
+      "Schreiner and Abasciano both connect the discussion with salvation and Israel.",
+      "Both allow a relationship between the people and persons; they disagree about its direction and conditions.",
+      "Their disagreement cannot be settled by counting named individuals without examining the function of Paul's scriptural quotations."
+    ],
+    "attributionAudit": [
+      {"claim": "Abasciano's inclusion of individuals supports unconditional individual election.", "status": "Not supported", "reason": "He expressly distinguishes corporate participation from that account of individual election.", "sourceIds": ["abasciano-2006"]},
+      {"claim": "Schreiner is evidence for corporate election as an alternative to individual election.", "status": "Misleading", "reason": "His argument defends individual saving election while retaining the corporate dimension.", "sourceIds": ["schreiner-1993", "schreiner-2006"]},
+      {"claim": "Hagopian's survey proves that Hagopian endorses corporate priority.", "status": "Not established", "reason": "A survey's description of another scholar is not an endorsement. The cited introduction does not establish that conclusion.", "sourceIds": ["hagopian-2005"]},
+      {"claim": "Bible.org uniformly represents one position and can be cited without author or article.", "status": "Overgeneralized", "reason": "Name the article and its author. Wallace's essay rejects the corporate-only definition he is addressing; that does not establish every contributor's view.", "sourceIds": ["wallace-corporate"]},
+      {"claim": "The Jews believed descent automatically guaranteed salvation.", "status": "Overgeneralized", "reason": "Do not turn a reading of Paul's rhetorical interlocutor into a claim about all ancient or modern Jews. Compare Jewish sources on covenant, repentance and responsibility.", "sourceIds": []},
+      {"claim": "Schreiner (1993), pp. 94–121, and Abasciano (2006), pp. 0–28, identify the original journal pagination.", "status": "Incorrect pagination", "reason": "The original articles are JETS 36/1, pp. 25–40, and JETS 49/2, pp. 351–371. Reprints require their own edition-specific citations.", "sourceIds": ["schreiner-1993", "abasciano-2006"]}
+    ],
+    "crossFaithComparison": {
+      "scope": "Related questions of covenant, divine choice and responsibility can be compared across religions. Romans is a Christian scriptural text; Jewish and Muslim positions should not be forced into the categories of this intra-Christian debate.",
+      "prompts": [
+        {"tradition": "Judaism", "question": "How do covenant, Israel, repentance and responsibility relate in the Jewish source being read?", "sourceIds": ["pirke-avot", "maimonides-guide", "kohler-theology"], "caution": "Distinguish rabbinic sayings, medieval philosophy and modern Reform interpretation; none speaks for all Judaism."},
+        {"tradition": "Islam", "question": "How does this source relate God's guidance and knowledge to human belief and responsibility?", "sourceIds": ["quran-pickthall", "ghazali-confessions", "averroes-philosophy", "ameer-ali-islam"], "caution": "Compare Qur'anic passages and named theological arguments in their own contexts; this collection does not yet adequately cover Shi'a, Ibadi or the range of Sunni schools."}
+      ]
+    },
+    "sources": [
+      {"id": "schreiner-1993", "author": "Thomas R. Schreiner", "title": "Does Romans 9 Teach Individual Election unto Salvation? Some Exegetical and Theological Reflections", "date": "1993", "publication": "Journal of the Evangelical Theological Society 36/1, 25–40", "url": "https://etsjets.org/wp-content/uploads/2010/07/files_JETS-PDFs_36_36-1_JETS_36-1_025-040_Schreiner.pdf", "kind": "primary scholarly argument", "fullTextIncluded": false, "trainingEligible": false},
+      {"id": "abasciano-2006", "author": "Brian J. Abasciano", "title": "Corporate Election in Romans 9: A Reply to Thomas Schreiner", "date": "2006", "publication": "Journal of the Evangelical Theological Society 49/2, 351–371", "url": "https://etsjets.org/wp-content/uploads/2010/06/files_JETS-PDFs_49_49-2_JETS_49-2_351-371_Abasciano.pdf", "kind": "primary scholarly argument", "fullTextIncluded": false, "trainingEligible": false},
+      {"id": "schreiner-2006", "author": "Thomas R. Schreiner", "title": "Corporate and Individual Election in Romans 9: A Response to Brian Abasciano", "date": "2006", "publication": "Journal of the Evangelical Theological Society 49/2, 373–386", "url": "https://etsjets.org/wp-content/uploads/2010/06/files_JETS-PDFs_49_49-2_JETS_49-2_373-386_Schreiner.pdf", "kind": "primary scholarly reply", "fullTextIncluded": false, "trainingEligible": false},
+      {"id": "hagopian-2005", "author": "Rich Hagopian", "title": "“To be Right with God”: An Exploration of the New Perspective View on Paul", "date": "2005", "publication": "Ashland Theological Journal 37, beginning p. 19", "url": "https://www.galaxie.com/article/atj37-1-03", "kind": "primary survey; introductory scope verified", "fullTextIncluded": false, "trainingEligible": false},
+      {"id": "wallace-corporate", "author": "Daniel B. Wallace", "title": "Corporate Election", "date": "2004", "publication": "Bible.org", "url": "https://bible.org/article/corporate-election", "kind": "primary theological essay", "fullTextIncluded": false, "trainingEligible": false}
+    ],
+    "limitations": [
+      "This dossier verifies a particular scholarly exchange, not every Christian interpretation of Romans 9.",
+      "Catholic, Orthodox, Lutheran, Wesleyan, Anabaptist, Pentecostal and other exegetical accounts need additional named contemporary sources.",
+      "The source-linked summaries are editorial paraphrases, not quotations or labeled theological truth for training.",
+      "No copyrighted modern article full text is redistributed or included in the training export.",
+      "A topic's appearance in the corpus does not guarantee that the corpus can answer every question about it."
+    ]
+  }
+]

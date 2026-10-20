@@ -1,0 +1,11 @@
+Study encyclopedia text © Wikipedia contributors.
+CC BY-SA 4.0: https://creativecommons.org/licenses/by-sa/4.0/
+Legal code: https://creativecommons.org/licenses/by-sa/4.0/legalcode.en
+
+Each article includes its source URL, stable revision URL, author-history URL and retrieval date.
+Modified: HTML converted to plain text; selected sections abridged; infoboxes, tables, images,
+block quotations and navigation omitted; section categories and links added.
+These adapted article texts are distributed under CC BY-SA 4.0.
+Bibliographic links do not license the third-party works to which they point.
+Bethsaida study notes are separately identified as original summaries licensed CC BY 4.0.
+See https://foundation.wikimedia.org/wiki/Policy:Terms_of_Use#7._Licensing_of_Content

@@ -1,8 +1,9 @@
 <script>
   import Icon from './Icon.svelte';
+  import EntityLinks from './EntityLinks.svelte';
   import { json, lookupLemma, referenceLabel, nativeToEnglish, versePreview } from './data.js';
 
-  let { catalog, book, chapter, verse, text, edition, verseMap, inverseMap, isSaved, openRequest = 0, onSave, onNavigate } = $props();
+  let { catalog, book, chapter, verse, text, edition, verseMap, inverseMap, isSaved, openRequest = 0, onSave, onNavigate, onArticle, onMap, onResearch } = $props();
   let tab = $state('language');
   let words = $state([]);
   let sourceRefs = $state([]);
@@ -125,6 +126,8 @@
   <div class="study-topline"><span class="eyebrow">LOOK A LITTLE CLOSER</span><span class="study-spark">✦</span></div>
   <div class="study-title-row"><h2>{label(ref)}</h2><button class:is-saved={isSaved} class="icon-button" aria-label={isSaved ? 'Unsave selected verse' : 'Save selected verse'} aria-pressed={isSaved} onclick={onSave}><Icon name="bookmark" /></button></div>
   <blockquote>{text || 'Select a verse to begin exploring.'}</blockquote>
+  <EntityLinks {book} {chapter} {verse} {text} gloss={word?.gloss || ''} aligned={eligible} {onArticle} {onMap} />
+  <button class="study-research-button" onclick={onResearch}><Icon name="spark" />Compare interpretations<Icon name="arrow-right" /></button>
   <div class="study-tabs" role="tablist" aria-label="Study tools">
     {#each [['language', 'Original language'], ['references', 'Cross-references']] as [value, title]}
       <button role="tab" id={`${value}-tab`} aria-selected={tab === value} aria-controls="study-content" tabindex={tab === value ? 0 : -1} onclick={() => changeTab(value)} onkeydown={event => {

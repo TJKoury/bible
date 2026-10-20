@@ -3,6 +3,8 @@
 A Svelte 5 Bible reader with translation comparison, original-language word study,
 lemma concordances, and verse cross-references. Vite serves the app; all scripture
 data is downloaded and served locally. No Bible API keys are required for the installed editions.
+It also includes an attributed study encyclopedia, passage-linked 2D/3D geography,
+and a local research desk comparing Christian traditions, Judaism, and Islam.
 
 ## Run
 
@@ -36,6 +38,78 @@ npm run build
 - Full-text search within the selected translation, reference search, translation
   comparison, bookmarks, reading size, evening theme, and focus mode.
 - Small-screen layout with a dismissible verse-study panel.
+- A visible light/dark switch, with the choice saved in this browser.
+- 792 abridged Wikipedia articles about places, people, objects, and other subjects,
+  with source revisions, contributor history, and separately grouped archaeology,
+  artifacts, maps, literature, and references. Bethsaida has sourced study notes
+  comparing the et-Tell and el-Araj excavation projects.
+- 1,342 biblical places with 4,370 candidate identifications, linked to 5,616 verses
+  across 860 chapters. MapLibre renders 2D maps and actual 3D elevation, preserving
+  uncertain and alternative locations. Empty passages remain empty.
+- Local passage retrieval across 13 theological works (4,465 passages, about 1.45
+  million words), BSB, and encyclopedia summaries; relevant encyclopedia sections
+  load on demand. Faith labels identify sources without choosing a preferred faith.
+- Optional Qwen3 8B, 4B, 1.7B, or 0.6B inference on WebGPU. Download progress,
+  cancellation, unload, cache removal, streaming answers, source selection, citation
+  links, and Markdown/copy exports are included. No hosted model API receives questions.
+- A source-linked Romans 9 comparison keeps Schreiner, Abasciano, and Hagopian
+  distinct and corrects endorsement/pagination overstatements in the example answer.
+
+## Study data and local AI
+
+```sh
+npm run data:geography       # reuse pinned source revisions and cache
+npm run data:research        # reuse locked historical texts
+npm run verify:study
+npm run training:prepare    # export equal passage counts per religion, source-disjoint splits
+npm run training:encyclopedia # separate attributed Wikipedia section export
+npm run training:plan       # validate data and write a dry-run plan; no model training
+```
+
+`scripts/download_geography.py --refresh` deliberately refreshes Wikipedia revisions.
+The encyclopedia importer retains bibliographic pointers, not the full text of every
+paper referenced by Wikipedia. Text is abridged and section grouping is automatic.
+See `public/data/encyclopedia/index.json` for coverage, omitted disambiguation pages,
+and source attribution. Modern archaeological findings in the Bethsaida notes are
+attributed to the excavation teams, not presented as independently adjudicated facts.
+
+Research text/source metadata and hashes are in `public/data/research/`.
+[Research data and training documentation](docs/research-data.md) describes each
+source, tradition, rights, gaps, the training split, and the complete MLX → MLC →
+WebGPU conversion path. `scripts/train_model.py --train` runs an explicit local
+LoRA experiment only after the documented dependencies and checksum-pinned base
+weights are installed. Its default dry run does not download weights or train.
+The separate encyclopedia export contains 4,456 retained sections (591,270 words),
+with article-separated splits, revision links, attribution, and CC BY-SA notices.
+It excludes generated notes and the bodies of papers linked from Wikipedia.
+
+**No custom theological model has been trained or deployed.** The app currently
+uses a pretrained model with retrieved evidence. Raw historical texts are not a
+reviewed question/answer dataset. An experiment on those texts would be domain
+adaptation, not proof of accurate theology or reliable citation. Quality evaluation
+needs held-out questions and attribution checks across the represented traditions,
+including distinctions between an author's argument, an objection, and a survey.
+
+Load a model from **Research desk → Load local model**. A secure context (localhost
+or HTTPS), WebGPU, and `shader-f16` support are required. Qwen3 8B needs roughly a
+4.7 GB initial weight download and 6+ GB of available GPU memory; 4B downloads
+about 2.4 GB. Smaller
+models use less memory but have weaker reasoning. Models are downloaded from
+Hugging Face and a WebGPU runtime from MLC's GitHub repository; browser caching is
+best-effort. Sources can still be searched and exported without a model.
+
+The app checks whether generated citation IDs exist in the selected evidence
+packet. It **does not automatically verify entailment or author endorsement**.
+Those checks remain visible review questions. Retrieval uses BM25 and source
+diversity rather than a semantic embedding model, so ambiguous vocabulary can
+produce irrelevant matches. Users can inspect and change the evidence packet.
+
+Map tiles load online from OpenStreetMap and elevation from Mapterhorn; no tiles
+are bulk downloaded. Set `VITE_MAP_TILES` to a compatible raster endpoint to use
+another provider, and update attribution for that provider. Maps show modern
+terrain/shorelines with 1.4× elevation in 3D, not an ancient reconstruction.
+Regions may be represented by a reference point. OpenBible source rankings are
+historical aggregates, not current probabilities.
 
 ## Data and provenance
 
@@ -88,6 +162,17 @@ in the UK. Original-language ZIP downloads include attribution and modification 
   not imply identical meaning. Cross-reference previews show the first verse of a range.
 - Bookmarks and preferences are browser-local. Downloads save data files; this is
   not yet an installable offline PWA.
+- The encyclopedia, archaeological catalog, and theological library are broad
+  starting collections, **not exhaustive**. Missing artifact or literature sections
+  are disclosed. Historical availability and public-domain status do not make a
+  source authoritative or representative of a whole religion.
+- Internal diversity and contemporary scholarship remain unevenly covered.
+  Christian, Jewish, and Muslim categories are not treated as interchangeable.
+- Exact passage geography uses English numbering for the 66-book corpus. It is
+  disabled for native-numbered editions; the standalone atlas remains searchable.
+- The browser runtime and map library are loaded separately from the reader.
+  Initial model downloads and GPU compilation can take time; this is not a
+  model-training runtime in the browser.
 
 ## Structure
 
@@ -96,3 +181,7 @@ in the UK. Original-language ZIP downloads include attribution and modification 
 `src/lib/data.js` contains caching, verse labels, mapping, and concordance access.
 `scripts/download_data.py` builds data; `scripts/verify_data.py` checks all concordance
 targets, download metadata, archive integrity, and counts.
+`Atlas.svelte`, `MapView.svelte`, and `Encyclopedia.svelte` handle study context.
+`Research.svelte` and two dedicated workers isolate retrieval and model inference
+from the reading UI. `retrieval.js` handles ranking, source diversity and citation
+identifier checks; `ai.js` defines the comparative research prompt.

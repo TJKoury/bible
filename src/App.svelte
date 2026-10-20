@@ -2,6 +2,9 @@
   import { onMount, tick } from 'svelte';
   import Icon from './lib/Icon.svelte';
   import StudyPanel from './lib/StudyPanel.svelte';
+  import Atlas from './lib/Atlas.svelte';
+  import Encyclopedia from './lib/Encyclopedia.svelte';
+  import Research from './lib/Research.svelte';
   import { json, shortName, referenceLabel, parseReference, inverseMapping, storageRead, storageWrite } from './lib/data.js';
 
   let catalog = $state(null);
@@ -16,6 +19,9 @@
   let compareTranslation = $state('KJV');
   let mode = $state('read');
   let view = $state('reader');
+  let articleId = $state('');
+  let researchStarted = $state(false);
+  let researchRequest = $state(null);
   let testament = $state('NT');
   let sidebarOpen = $state(false);
   let focused = $state(false);
@@ -200,7 +206,10 @@
     saved = saved.filter(s => !(s.ref === item.ref && s.edition === item.edition));
     storageWrite('scripture-bookmarks', saved);
   }
-  function setView(value) { view = value; sidebarOpen = false; focused = false; window.scrollTo(0, 0); }
+  function setView(value) { view = value; if (value === 'research') researchStarted = true; sidebarOpen = false; focused = false; window.scrollTo(0, 0); }
+  function openArticle(id) { articleId = id; setView('encyclopedia'); }
+  function openResearch(question = '') { researchRequest = { question }; setView('research'); }
+  function atlasPassage(b, c, v) { navigate(`${b}.${c}.${v}`, translation, false); setView('atlas'); }
   async function openSearch() { searchDialog.showModal(); await tick(); searchField.focus(); }
   function keyboard(event) {
     if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes(event.target.tagName) && !document.querySelector('dialog[open]')) {
@@ -280,6 +289,7 @@
   <span class="brand-caption">A little closer to the Word.</span>
   <button class="search-trigger" aria-label="Find a passage or phrase" onclick={openSearch} disabled={!catalog}><Icon name="search" /><span>Find a passage or phrase</span><kbd>/</kbd></button>
   <button class="icon-button" aria-label="Reading appearance" onclick={() => settingsDialog.showModal()}><span class="aa">Aa</span></button>
+  <button class="icon-button theme-toggle" aria-label={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'} title={theme === 'light' ? 'Switch to dark theme' : 'Switch to light theme'} onclick={() => theme = theme === 'light' ? 'dark' : 'light'}><Icon name={theme === 'light' ? 'moon' : 'sun'} /></button>
 </header>
 
 {#if bootError}
@@ -290,8 +300,8 @@
   <div class="workspace">
     <aside class="sidebar" class:open={sidebarOpen} aria-label="Bible navigation">
       <nav class="main-nav" aria-label="Main navigation">
-        {#each [['reader', 'Read & explore', 'book'], ['library', 'Translation library', 'library'], ['saved', 'Saved passages', 'bookmark']] as [value, title, icon]}
-          <button class="nav-item" class:active={view === value} aria-current={view === value ? 'page' : undefined} onclick={() => setView(value)}><Icon name={icon} />{title}{#if value !== 'reader'}<span class="nav-count">{value === 'library' ? catalog.translations.length : saved.length || ''}</span>{/if}</button>
+        {#each [['reader', 'Read & explore', 'book'], ['encyclopedia', 'Study encyclopedia', 'compass'], ['atlas', 'Geography & maps', 'map'], ['research', 'Research desk', 'spark'], ['library', 'Translation library', 'library'], ['saved', 'Saved passages', 'bookmark']] as [value, title, icon]}
+          <button class="nav-item" class:active={view === value} aria-current={view === value ? 'page' : undefined} onclick={() => setView(value)}><Icon name={icon} />{title}{#if value === 'library' || value === 'saved'}<span class="nav-count">{value === 'library' ? catalog.translations.length : saved.length || ''}</span>{/if}</button>
         {/each}
       </nav>
       <div class="sidebar-label">THE BOOKS<span>{availableBooks.length}</span></div>
@@ -342,8 +352,12 @@
             </article>
             <div class="chapter-bottom"><span>{edition?.title} · {edition?.license}</span><button disabled={!adjacent(1)} onclick={() => moveChapter(1)}>Next chapter<Icon name="arrow-right" /></button></div>
           </section>
-          <StudyPanel {catalog} {book} {chapter} {verse} text={selectedText} {edition} {verseMap} {inverseMap} {isSaved} openRequest={studyOpenRequest} onSave={toggleSaved} onNavigate={navigate} />
+          <StudyPanel {catalog} {book} {chapter} {verse} text={selectedText} {edition} {verseMap} {inverseMap} {isSaved} openRequest={studyOpenRequest} onSave={toggleSaved} onNavigate={navigate} onArticle={openArticle} onMap={() => setView('atlas')} onResearch={() => openResearch(`Compare interpretations of ${label(currentRef)} across relevant traditions.`)} />
         </div>
+      {:else if view === 'atlas'}
+        <Atlas {catalog} {book} {chapter} {verse} {edition} {theme} onPassage={atlasPassage} onArticle={openArticle} />
+      {:else if view === 'encyclopedia'}
+        <Encyclopedia selectedId={articleId} {book} {chapter} {verse} text={selectedText} {aligned} {theme} onSelect={openArticle} onMap={() => setView('atlas')} onResearch={openResearch} />
       {:else if view === 'library'}
         <section class="collection-view">
           <p class="eyebrow">MANY TRANSLATIONS. ONE PLACE TO EXPLORE.</p><h1>A library for deeper reading.</h1>
@@ -365,11 +379,16 @@
           <div class="publisher-list">{#each publishers as [id, url]}<a href={url} target="_blank" rel="noreferrer">{id} ↗<span>Publisher access</span></a>{/each}</div>
           <p class="source-caption library-footnote">Downloaded editions are stored with this app. ZIP downloads contain JSON text and source metadata; they do not install an offline web app. <button class="text-button" onclick={() => sourcesDialog.showModal()}>View sources & attribution</button></p>
         </section>
-      {:else}
+      {:else if view === 'saved'}
         <section class="collection-view"><p class="eyebrow">WORDS TO RETURN TO</p><h1>Your saved passages.</h1><p class="collection-lead">A quiet place for the verses you want to revisit. Saved in this browser on this device.</p>
           {#if !saved.length}<div class="resource-card"><h3>Keep a passage close.</h3><p>Select a verse in the reader and use the bookmark button to save it here.</p><button class="subtle-button" onclick={() => setView('reader')}>Back to reading<Icon name="arrow-right" /></button></div>{/if}
           {#each saved as item (item.ref + item.edition)}<div class="saved-card"><div class="saved-card-head"><button onclick={() => navigate(item.ref, item.edition)}>{label(item.ref)}<small>{shortName(item.edition)}</small></button><button class="icon-button" aria-label={`Remove ${label(item.ref)} from saved passages`} onclick={() => removeSaved(item)}><Icon name="trash" /></button></div><p>{item.text}</p></div>{/each}
         </section>
+      {/if}
+      {#if researchStarted}
+        <div hidden={view !== 'research'}>
+          <Research questionRequest={researchRequest} onNavigate={navigate} onArticle={openArticle} />
+        </div>
       {/if}
     </main>
   </div>
@@ -400,6 +419,8 @@
     <h3>Original-language texts & annotations</h3><p><a href="https://github.com/Clear-Bible/macula-hebrew/" target="_blank" rel="noreferrer">MACULA Hebrew Linguistic Datasets</a> and <a href="https://github.com/Clear-Bible/macula-greek/" target="_blank" rel="noreferrer">MACULA Greek Linguistic Datasets</a>, © 2022–2024 Biblica, Inc., CC BY 4.0. Original work of the Open Scriptures Hebrew Bible available at <a href="https://github.com/openscriptures/morphhb" target="_blank" rel="noreferrer">Open Scriptures</a>. Westminster Leningrad Codex text is public domain. Hebrew glosses: Cherith Glosses by Andi Wu, © 2022 Cherith Analytics, CC BY 4.0. Greek glosses: Berean Interlinear Bible, public domain.</p>
     <p>SBL Greek New Testament, © 2010 Society of Biblical Literature and Logos Bible Software, <a href="/licenses/SBLGNT.txt">CC BY 4.0</a>. Data has been converted into chapter JSON and lemma indexes; UBS semantic-domain fields are omitted. <a href="/licenses/macula-hebrew.md">Full Hebrew notices</a> · <a href="/licenses/macula-greek.md">Full Greek notices</a>.</p>
     <h3>References & verse numbering</h3><p><a href="https://www.openbible.info/labs/cross-references/" target="_blank" rel="noreferrer">OpenBible.info cross-references</a>, CC BY. Entries retain source vote rankings and ranges. Hebrew/English verse mapping comes from <a href="https://github.com/sillsdev/libpalaso" target="_blank" rel="noreferrer">SIL libpalaso</a> (<a href="/licenses/SIL.txt">license</a>). Whole-verse mappings are applied; some split-verse distinctions and textual variants are not represented. Native-numbered JPS, DRC, and CPDV editions remain readable, but automatic study alignment is disabled for them.</p>
+    <h3>Encyclopedia, geography & research</h3><p>Wikipedia article excerpts are adapted and abridged under CC BY-SA 4.0. Each entry links to its source revision and contributor history. OpenBible.info geography is CC BY 4.0; candidate identifications and uncertainty are preserved. Map imagery uses OpenStreetMap contributors and Mapterhorn terrain data, requested online.</p>
+    <p>The <a href="/data/research/manifest.json">research source manifest</a> records authors, perspectives, dates, licenses, and coverage gaps. Historical texts do not represent every contemporary believer or school. The optional WebGPU assistant uses a pretrained Qwen3 model, not a custom theological model. Source search and inference run in this browser; model downloads use Hugging Face and GitHub.</p>
     <p>Download the <a href="/data/sources.json" download>source URLs and SHA-256 checksums</a>. Each translation download includes its source and rights information. Code licensing does not replace the individual dataset licenses.</p>
   </div>
 </dialog>
